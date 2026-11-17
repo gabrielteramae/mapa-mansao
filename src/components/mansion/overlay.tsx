@@ -21,6 +21,7 @@ export function RoomPills() {
     let frame = 0;
     const loop = () => {
       frame = requestAnimationFrame(loop);
+      if (document.hidden) return;
       const camera = viewBridge.camera;
       const gl = viewBridge.gl;
       const host = root.current;

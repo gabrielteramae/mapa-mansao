@@ -3,6 +3,14 @@ import type { RoomId } from "@/lib/layout";
 
 export const lightMix = { current: 0 };
 
+function desktopGpu() {
+  if (typeof navigator === "undefined" || typeof window === "undefined") return true;
+  const touch = navigator.maxTouchPoints > 0;
+  const narrow = window.matchMedia("(max-width: 900px)").matches;
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  return !(touch && (narrow || coarse));
+}
+
 type House = {
   room: RoomId;
   member: string | null;
@@ -29,7 +37,7 @@ export const useHouse = create<House>((set) => ({
   playing: true,
   speed: 1,
   spin: false,
-  hq: true,
+  hq: desktopGpu(),
   setRoom: (room) => set((s) => ({ room, member: null, frame: s.frame + 1 })),
   setMember: (member) => set((s) => ({ member, frame: s.frame + 1 })),
   toggleNight: () => set((s) => ({ night: !s.night })),

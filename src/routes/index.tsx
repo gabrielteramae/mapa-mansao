@@ -11,14 +11,14 @@ export const Route = createFileRoute("/")({
 
 const canvasReady = import("@/components/mansion/canvas");
 
+const MIN_READ = 3400;
+
 function Opening({ leaving }: { leaving: boolean }) {
   return (
     <div className={leaving ? "opening opening-out" : "opening"}>
       <div className="opening-mark" />
-      <EnterText text="Mansão R6" className="text-2xl font-bold" />
-      <span className="text-in" style={{ animationDelay: "0.45s" }}>
-        Carregando a Mansão
-      </span>
+      <EnterText text="Mansão R6" className="opening-title font-bold" />
+      <span className="opening-sub text-in">Carregando a Mansão</span>
     </div>
   );
 }
@@ -33,13 +33,18 @@ function Home() {
 
   useEffect(() => {
     let dead = false;
+    const started = performance.now();
     void canvasReady.then((mod) => {
       if (dead) return;
       setCanvas(() => mod.MansionCanvas);
-      setPhase("leave");
+      const wait = Math.max(0, MIN_READ - (performance.now() - started));
       window.setTimeout(() => {
-        if (!dead) setPhase("done");
-      }, 620);
+        if (dead) return;
+        setPhase("leave");
+        window.setTimeout(() => {
+          if (!dead) setPhase("done");
+        }, 700);
+      }, wait);
     });
     return () => {
       dead = true;

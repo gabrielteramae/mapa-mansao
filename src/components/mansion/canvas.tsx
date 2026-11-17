@@ -20,7 +20,9 @@ const ROOM_VIEW: Record<RoomId, { x: number; y: number; z: number; zoom: number 
 };
 
 function fitZoom(width: number, height: number) {
-  return THREE.MathUtils.clamp(Math.min(width / 12, height / 14), 30, 48);
+  const phone = width < 700;
+  const zoom = phone ? Math.min(width / 9.2, height / 11.2) : Math.min(width / 12, height / 14);
+  return THREE.MathUtils.clamp(zoom, phone ? 36 : 30, phone ? 56 : 48);
 }
 
 const sunDay = new THREE.Color("#fffdf8");
@@ -48,7 +50,7 @@ function Sky() {
 
 function DayLight() {
   const hq = useHouse((s) => s.hq);
-  const map = hq ? 2048 : 1024;
+  const map = hq ? 1024 : 512;
   const hemi = useRef<THREE.HemisphereLight>(null);
   const amb = useRef<THREE.AmbientLight>(null);
   const sun = useRef<THREE.DirectionalLight>(null);
@@ -77,7 +79,7 @@ function DayLight() {
       <ambientLight ref={amb} intensity={0.42} />
       <directionalLight
         ref={sun}
-        castShadow
+        castShadow={hq}
         position={[8, 26, 12]}
         intensity={2.15}
         color="#fffdf8"
@@ -122,14 +124,14 @@ function CameraRig() {
     let y = 0.9;
     let z = -0.2;
     let zoom = fitZoom(size.width, size.height);
-    const phone = size.width < 700 ? 0.78 : 1;
+    const phone = size.width < 700 ? 0.92 : 1;
     if (member) {
       const person = getAgents().find((a) => a.id === member);
       if (person) {
         x = person.x;
         y = 1;
         z = person.z;
-        zoom = 108;
+        zoom = phone < 1 ? 78 : 108;
       }
     } else {
       const view = ROOM_VIEW[room];
@@ -195,6 +197,7 @@ function CameraRig() {
 function ShadowCatch() {
   const scene = useThree((s) => s.scene);
   const night = useHouse((s) => s.night);
+  const hq = useHouse((s) => s.hq);
   useLayoutEffect(() => {
     scene.traverse((obj) => {
       const mesh = obj as THREE.Mesh;
@@ -210,14 +213,10 @@ function ShadowCatch() {
       const flat = kind === "PlaneGeometry" || kind === "CircleGeometry" || kind === "RingGeometry";
       const mat = mesh.material as THREE.Material | undefined;
       const invisible = !!mat && "opacity" in mat && mat.opacity === 0;
-      if (mesh.name === "sun" || city || flat || invisible) {
-        mesh.castShadow = false;
-      } else {
-        mesh.castShadow = true;
-      }
-      mesh.receiveShadow = !city && !invisible;
+      mesh.castShadow = hq && !city && !flat && !invisible && mesh.name !== "sun";
+      mesh.receiveShadow = hq && !city && !invisible;
     });
-  }, [scene, night]);
+  }, [scene, night, hq]);
   return null;
 }
 
@@ -244,8 +243,8 @@ function Tune() {
     gl.toneMapping = THREE.ACESFilmicToneMapping;
     gl.toneMappingExposure = hq ? 1.08 : 1;
     gl.outputColorSpace = THREE.SRGBColorSpace;
-    gl.shadowMap.type = THREE.PCFShadowMap;
-    gl.shadowMap.enabled = true;
+    gl.shadowMap.type = hq ? THREE.PCFShadowMap : THREE.BasicShadowMap;
+    gl.shadowMap.enabled = hq;
     gl.shadowMap.needsUpdate = true;
     gl.setClearColor(0x000000, 0);
   }, [gl, hq]);
@@ -279,10 +278,15 @@ export function MansionCanvas() {
       frameloop="always"
       className="block h-full w-full touch-none"
       style={{ width: "100%", height: "100%", display: "block" }}
-      dpr={hq ? [1, 2] : 1}
-      shadows={{ type: THREE.PCFShadowMap }}
+      dpr={hq ? [1, 1.5] : [1, 1.25]}
+      shadows={hq ? { type: THREE.PCFShadowMap } : false}
       camera={{ position: [11, 15, 11], zoom: 32, near: -40, far: 120 }}
-      gl={{ antialias: true, alpha: true, stencil: false, powerPreference: "high-performance" }}
+      gl={{
+        antialias: hq,
+        alpha: true,
+        stencil: false,
+        powerPreference: hq ? "high-performance" : "default",
+      }}
     >
       <Sky />
       <Tune />
@@ -298,8 +302,8 @@ export function MansionCanvas() {
         enablePan={false}
         enableDamping
         dampingFactor={0.12}
-        rotateSpeed={0.55}
-        zoomSpeed={0.7}
+        rotateSpeed={0.65}
+        zoomSpeed={0.8}
         minPolarAngle={0.42}
         maxPolarAngle={0.92}
         minZoom={24}

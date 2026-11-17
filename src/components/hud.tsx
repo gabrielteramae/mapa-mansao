@@ -39,7 +39,7 @@ export function Hud() {
         type="button"
         aria-label={open ? "Fechar menu" : "Abrir menu"}
         aria-expanded={open}
-        className="pointer-events-auto absolute left-3 top-3 flex size-11 items-center justify-center rounded-full border border-black/10 bg-white sm:left-5 sm:top-5"
+        className="pointer-events-auto absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[max(0.75rem,env(safe-area-inset-top))] flex size-11 items-center justify-center rounded-full border border-black/10 bg-white sm:left-5 sm:top-5"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="flex w-5 flex-col gap-1">
@@ -61,7 +61,7 @@ export function Hud() {
             className="pointer-events-auto absolute inset-0"
             onClick={close}
           />
-          <div className="pointer-events-auto absolute left-3 top-16 z-20 max-h-[70dvh] w-52 overflow-y-auto rounded-2xl border border-black/10 bg-white p-3 text-black shadow-lg sm:left-5">
+          <div className="pointer-events-auto absolute left-[max(0.75rem,env(safe-area-inset-left))] top-[calc(max(0.75rem,env(safe-area-inset-top))+3.25rem)] z-20 max-h-[70dvh] w-[min(13rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-black/10 bg-white p-3 text-black shadow-lg sm:left-5">
             <p className="px-2 text-sm font-bold">Mansão R6</p>
             <div className="mt-2 flex flex-col">
               {crew.map((person) => (
@@ -98,13 +98,13 @@ export function Hud() {
         aria-label={
           night ? "Agora está escuro. Mudar para claro" : "Agora está claro. Mudar para escuro"
         }
-        className="time-btn pointer-events-auto absolute right-3 top-3 flex size-11 items-center justify-center rounded-full border border-black/10 bg-white text-black sm:right-5 sm:top-5"
+        className="time-btn pointer-events-auto absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] flex size-11 items-center justify-center rounded-full border border-black/10 bg-white text-black sm:right-5 sm:top-5"
         onClick={() => toggleNight()}
       >
         {night ? <Moon className="size-5" /> : <Sun className="size-5" />}
       </button>
 
-      <div className="hud-rise pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-3">
+      <div className="hud-rise pointer-events-none absolute inset-x-0 bottom-[max(0.75rem,env(safe-area-inset-bottom))] flex justify-center px-3">
         <div className="pointer-events-auto flex max-w-full justify-center gap-2 overflow-x-auto pb-1">
           {nav.map((item, i) => {
             const on = item.id === room;
