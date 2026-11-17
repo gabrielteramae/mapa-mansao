@@ -50,7 +50,7 @@ function Sky() {
 
 function DayLight() {
   const hq = useHouse((s) => s.hq);
-  const map = hq ? 1024 : 512;
+  const map = 1024;
   const hemi = useRef<THREE.HemisphereLight>(null);
   const amb = useRef<THREE.AmbientLight>(null);
   const sun = useRef<THREE.DirectionalLight>(null);
@@ -238,16 +238,43 @@ function Spin() {
 
 function Tune() {
   const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
   const hq = useHouse((s) => s.hq);
+  const sweep = useRef(0);
   useEffect(() => {
     gl.toneMapping = THREE.ACESFilmicToneMapping;
-    gl.toneMappingExposure = hq ? 1.08 : 1;
+    gl.toneMappingExposure = 1.05;
     gl.outputColorSpace = THREE.SRGBColorSpace;
-    gl.shadowMap.type = hq ? THREE.PCFShadowMap : THREE.BasicShadowMap;
-    gl.shadowMap.enabled = hq;
+    gl.shadowMap.type = THREE.PCFSoftShadowMap;
+    gl.shadowMap.enabled = true;
     gl.shadowMap.needsUpdate = true;
     gl.setClearColor(0x000000, 0);
   }, [gl, hq]);
+  useFrame(() => {
+    if (sweep.current > 180) return;
+    sweep.current += 1;
+    const max = gl.capabilities.getMaxAnisotropy();
+    scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      for (const mat of list) {
+        if (!mat) continue;
+        const maps = [
+          (mat as THREE.MeshStandardMaterial).map,
+          (mat as THREE.MeshStandardMaterial).emissiveMap,
+        ];
+        for (const map of maps) {
+          if (!map || map.anisotropy === max) continue;
+          map.anisotropy = max;
+          map.magFilter = THREE.LinearFilter;
+          map.minFilter = THREE.LinearMipmapLinearFilter;
+          map.generateMipmaps = true;
+          map.needsUpdate = true;
+        }
+      }
+    });
+  });
   return null;
 }
 
@@ -271,21 +298,20 @@ function Air() {
 }
 
 export function MansionCanvas() {
-  const hq = useHouse((s) => s.hq);
   return (
     <Canvas
       orthographic
       frameloop="always"
       className="block h-full w-full touch-none"
       style={{ width: "100%", height: "100%", display: "block" }}
-      dpr={hq ? [1, 1.5] : [1, 1.25]}
-      shadows={hq ? { type: THREE.PCFShadowMap } : false}
+      dpr={[1, 2]}
+      shadows={{ type: THREE.PCFSoftShadowMap }}
       camera={{ position: [11, 15, 11], zoom: 32, near: -40, far: 120 }}
       gl={{
-        antialias: hq,
+        antialias: true,
         alpha: true,
         stencil: false,
-        powerPreference: hq ? "high-performance" : "default",
+        powerPreference: "high-performance",
       }}
     >
       <Sky />

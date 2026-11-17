@@ -512,6 +512,9 @@ function bannerTexture() {
   g.fillText("Mansão R6", 512, 136);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 16;
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
   return tex;
 }
 function BannerPlane() {
@@ -559,10 +562,10 @@ function BannerPlane() {
     const goingLeft = trip < .5;
     const u = goingLeft ? trip / .5 : (trip - .5) / .5;
     const x = goingLeft ? 26 - u * 52 : -26 + u * 52;
-    group.position.set(x, 8.4, 8);
+    group.position.set(x, 11.2, -2);
     group.rotation.set(0, goingLeft ? Math.PI : 0, 0);
   });
-  return <group ref={ref} scale={2.15}><mesh position={[.15, 0, 0]} material={planeWhite}><boxGeometry args={[2.35, .42, .42]} /></mesh><mesh position={[1.45, 0, 0]} rotation={[0, 0, -Math.PI / 2]} material={planeBlue}><coneGeometry args={[.21, .62, 10]} /></mesh><mesh position={[.35, .2, 0]} material={planeBlue}><boxGeometry args={[.55, .22, .32]} /></mesh><mesh position={[.05, 0, 0]} material={planeWhite}><boxGeometry args={[.85, .08, 3.1]} /></mesh><mesh position={[-.95, .38, 0]} material={planeBlue}><boxGeometry args={[.42, .55, .08]} /></mesh><mesh position={[-.95, .02, 0]} material={planeWhite}><boxGeometry args={[.42, .06, 1.15]} /></mesh><mesh position={[-1.55, -.05, 0]} material={planeBlue}><boxGeometry args={[.08, .08, .55]} /></mesh><mesh position={[1.62, 0, 0]}><sphereGeometry args={[.07, 12, 12]} /><meshBasicMaterial color="#fff6d0" /></mesh><spotLight ref={lamp} position={[1.35, 0, 0]} angle={.42} penumbra={.6} intensity={10} distance={22} color="#fff4cc" decay={2} /><object3D ref={aim} position={[8, 0, 0]} /><mesh ref={flagA} position={[-2.55, -.15, .02]} material={front}><planeGeometry args={[1.7, .48, 14, 4]} /></mesh><mesh ref={flagB} position={[-2.55, -.15, -.02]} rotation={[0, Math.PI, 0]} material={back}><planeGeometry args={[1.7, .48, 14, 4]} /></mesh></group>;
+  return <group ref={ref} scale={2.15}><mesh position={[.15, 0, 0]} material={planeWhite}><boxGeometry args={[2.35, .42, .42]} /></mesh><mesh position={[1.45, 0, 0]} rotation={[0, 0, -Math.PI / 2]} material={planeBlue}><coneGeometry args={[.21, .62, 10]} /></mesh><mesh position={[.35, .2, 0]} material={planeBlue}><boxGeometry args={[.55, .22, .32]} /></mesh><mesh position={[.05, 0, 0]} material={planeWhite}><boxGeometry args={[.85, .08, 3.1]} /></mesh><mesh position={[-.95, .38, 0]} material={planeBlue}><boxGeometry args={[.42, .55, .08]} /></mesh><mesh position={[-.95, .02, 0]} material={planeWhite}><boxGeometry args={[.42, .06, 1.15]} /></mesh><mesh position={[-1.55, -.05, 0]} material={planeBlue}><boxGeometry args={[.08, .08, .55]} /></mesh><mesh position={[1.62, 0, 0]}><sphereGeometry args={[.07, 12, 12]} /><meshBasicMaterial color="#fff6d0" /></mesh><spotLight ref={lamp} position={[1.35, 0, 0]} angle={.42} penumbra={.6} intensity={10} distance={22} color="#fff4cc" decay={2} /><object3D ref={aim} position={[8, 0, 0]} /><mesh ref={flagA} position={[-2.55, -.15, .02]} material={front}><planeGeometry args={[1.7, .48, 32, 8]} /></mesh><mesh ref={flagB} position={[-2.55, -.15, -.02]} rotation={[0, Math.PI, 0]} material={back}><planeGeometry args={[1.7, .48, 32, 8]} /></mesh></group>;
 }
 function Extras() {
   const cases = cityColors;
