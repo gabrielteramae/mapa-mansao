@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useFrame, useThree, Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import * as THREE from "three";
 import { getAgents } from "@/lib/crew";
 import { useHouse, lightMix } from "@/lib/house";
@@ -36,6 +37,22 @@ const fogNight = new THREE.Color("#010208");
 const dayPos = new THREE.Vector3(8, 26, 12);
 const nightPos = new THREE.Vector3(-12, 18, -8);
 
+function Studio() {
+  const { gl, scene } = useThree();
+  useEffect(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    const room = new RoomEnvironment();
+    const env = pmrem.fromScene(room, 0.04).texture;
+    scene.environment = env;
+    scene.environmentIntensity = 0.42;
+    return () => {
+      if (scene.environment === env) scene.environment = null;
+      env.dispose();
+      pmrem.dispose();
+    };
+  }, [gl, scene]);
+  return null;
+}
 function Sky() {
   const { scene } = useThree();
   useEffect(() => {
@@ -315,6 +332,7 @@ export function MansionCanvas() {
       }}
     >
       <Sky />
+      <Studio />
       <Tune />
       <BindBridge />
       <DayLight />

@@ -499,17 +499,17 @@ function RoomLights() {
 }
 function bannerTexture() {
   const c = document.createElement("canvas");
-  c.width = 1024;
-  c.height = 256;
+  c.width = 2048;
+  c.height = 512;
   const g = c.getContext("2d");
   if (!g) return null;
   g.fillStyle = "#ffffff";
-  g.fillRect(0, 0, 1024, 256);
+  g.fillRect(0, 0, 2048, 512);
   g.fillStyle = "#1c2430";
-  g.font = "700 108px Georgia, serif";
+  g.font = "700 216px Georgia, serif";
   g.textAlign = "center";
   g.textBaseline = "middle";
-  g.fillText("Mansão R6", 512, 136);
+  g.fillText("Mansão R6", 1024, 272);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 16;

@@ -4,13 +4,13 @@ import * as THREE from "three";
 import { getAgents, step, type Agent } from "@/lib/crew";
 import { useHouse } from "@/lib/house";
 
-const thighGeo = new THREE.BoxGeometry(0.14, 0.34, 0.15);
-const shinGeo = new THREE.BoxGeometry(0.13, 0.3, 0.14);
-const shoeGeo = new THREE.BoxGeometry(0.16, 0.08, 0.22);
-const torsoGeo = new THREE.BoxGeometry(0.46, 0.56, 0.28);
-const upperGeo = new THREE.BoxGeometry(0.11, 0.24, 0.11);
-const foreGeo = new THREE.BoxGeometry(0.1, 0.22, 0.1);
-const headGeo = new THREE.SphereGeometry(0.2, 28, 20);
+const thighGeo = new THREE.CapsuleGeometry(0.07, 0.2, 4, 12);
+const shinGeo = new THREE.CapsuleGeometry(0.062, 0.16, 4, 12);
+const shoeGeo = new THREE.CapsuleGeometry(0.04, 0.14, 2, 10);
+const torsoGeo = new THREE.CapsuleGeometry(0.16, 0.26, 6, 16);
+const upperGeo = new THREE.CapsuleGeometry(0.055, 0.14, 4, 10);
+const foreGeo = new THREE.CapsuleGeometry(0.048, 0.12, 4, 10);
+const headGeo = new THREE.SphereGeometry(0.2, 32, 24);
 const pupil = new THREE.MeshBasicMaterial({ color: "#241c18" });
 const white = new THREE.MeshBasicMaterial({ color: "#fffaf6" });
 const mouth = new THREE.MeshBasicMaterial({ color: "#c4786a" });
@@ -390,18 +390,32 @@ function Person({ index }: { index: number }) {
           <mesh geometry={thighGeo} material={legMat} position={[0, -0.17, 0]} />
           <group ref={shinL} position={[0, -0.34, 0]}>
             <mesh geometry={shinGeo} material={legMat} position={[0, -0.15, 0]} />
-            <mesh geometry={shoeGeo} material={footMat} position={[0, -0.32, 0.03]} />
+            <mesh
+              geometry={shoeGeo}
+              material={footMat}
+              position={[0, -0.3, 0.05]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
           </group>
         </group>
         <group ref={legR} position={[0.12, 0, 0]}>
           <mesh geometry={thighGeo} material={legMat} position={[0, -0.17, 0]} />
           <group ref={shinR} position={[0, -0.34, 0]}>
             <mesh geometry={shinGeo} material={legMat} position={[0, -0.15, 0]} />
-            <mesh geometry={shoeGeo} material={footMat} position={[0, -0.32, 0.03]} />
+            <mesh
+              geometry={shoeGeo}
+              material={footMat}
+              position={[0, -0.3, 0.05]}
+              rotation={[Math.PI / 2, 0, 0]}
+            />
           </group>
         </group>
         <group ref={torso} position={[0, 0.31, 0]} scale={[agent.width, 1, 1]}>
-          <mesh geometry={torsoGeo} material={agent.top === "bare" ? skin : shirt} />
+          <mesh
+            geometry={torsoGeo}
+            material={agent.top === "bare" ? skin : shirt}
+            scale={[1.4, 1, 0.86]}
+          />
           {agent.top === "hoodie" && (
             <mesh position={[0, -0.06, 0.15]} material={shirt}>
               <boxGeometry args={[0.2, 0.14, 0.04]} />
@@ -417,7 +431,7 @@ function Person({ index }: { index: number }) {
             <group ref={foreL} position={[0, -0.24, 0]}>
               <mesh geometry={foreGeo} material={limb} position={[0, -0.11, 0]} />
               <mesh position={[0, -0.24, 0]} material={skin}>
-                <sphereGeometry args={[0.05, 8, 8]} />
+                <sphereGeometry args={[0.055, 16, 12]} />
               </mesh>
             </group>
             {agent.id === "nakazone" && (
@@ -431,7 +445,7 @@ function Person({ index }: { index: number }) {
             <group ref={foreR} position={[0, -0.24, 0]}>
               <mesh geometry={foreGeo} material={limb} position={[0, -0.11, 0]} />
               <mesh position={[0, -0.24, 0]} material={skin}>
-                <sphereGeometry args={[0.05, 8, 8]} />
+                <sphereGeometry args={[0.055, 16, 12]} />
               </mesh>
             </group>
           </group>
