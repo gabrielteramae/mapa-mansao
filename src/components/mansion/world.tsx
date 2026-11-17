@@ -196,7 +196,7 @@ function useScreens() {
   const tv = useMemo(() => welcomeTexture(), []);
   useEffect(() => {
     let dead = false;
-    const sources = ["screens/r6.jpg", "screens/fortnite.jpg", "screens/lol.jpg", "screens/dbd.jpg"].map((file) => `${import.meta.env.BASE_URL}${file}`);
+    const sources = ["screens/r6.jpg?v=2", "screens/fortnite.jpg?v=2", "screens/lol.jpg?v=2", "screens/dbd.jpg?v=2"].map((file) => `${import.meta.env.BASE_URL}${file}`);
     void Promise.all(sources.map(loadCover)).then(maps => {
       if (!dead) setPcs(maps);
     });
@@ -215,7 +215,7 @@ function useMuralTexture() {
   useEffect(() => {
     let dead = false;
     const img = new Image();
-    img.src = `${import.meta.env.BASE_URL}mural/gabriel.jpg?v=2`;
+    img.src = `${import.meta.env.BASE_URL}mural/gabriel.jpg?v=3`;
     img.onload = () => {
       if (dead) return;
       const c = document.createElement("canvas");
