@@ -6,6 +6,8 @@
 
 Mapa isométrico da casa. Dez pessoas andam, sentam e jogam numa sala com PCs, arena, lounge e o painel **Mansão R6**.
 
+No ar: https://gabrielteramae.github.io/mapa-mansao/
+
 Não é um jogo jogável. É a casa vista de cima, com a galera se mexendo sozinha.
 
 ## O que tem na casa

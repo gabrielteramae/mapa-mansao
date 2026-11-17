@@ -142,10 +142,39 @@ function authPopupPlugin(): Plugin {
   };
 }
 
+const pages = process.env.GITHUB_PAGES === "1";
+const pagesBase = "/mapa-mansao/";
+
+function pagesNitroInput(): Plugin {
+  return {
+    name: "pages-nitro-input",
+    apply: "build",
+    enforce: "post",
+    config() {
+      if (!pages) return;
+      // The static preset has no server entry. Vite 8 then SSRs index.html and
+      // the build dies after the HTML is already on disk. This input is only
+      // the leftover server bundle.
+      return {
+        environments: {
+          nitro: {
+            build: {
+              rolldownOptions: {
+                input: "./scripts/pages-noop.mjs",
+              },
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
 export default defineConfig(({ command, isPreview }) => ({
+  base: pages ? pagesBase : "/",
   server: {
     host: "0.0.0.0",
     port: 8080,
@@ -169,13 +198,24 @@ export default defineConfig(({ command, isPreview }) => ({
     tanstackStart(),
     ...(command === "build" || isPreview
       ? [
-          nitro({
-            preset: "vercel",
-            // Auto-registers server/middleware/* (the PWA install page +
-            // manifest + head-tag middleware). Nitro v3 defaults serverDir to
-            // false, so removing this silently unwires /?install=1 on deploys.
-            serverDir: "./server",
-          }),
+          nitro(
+            pages
+              ? {
+                  preset: "github-pages",
+                  prerender: {
+                    routes: ["/mapa-mansao/"],
+                    crawlLinks: false,
+                  },
+                }
+              : {
+                  preset: "vercel",
+                  // Auto-registers server/middleware/* (the PWA install page +
+                  // manifest + head-tag middleware). Nitro v3 defaults serverDir to
+                  // false, so removing this silently unwires /?install=1 on deploys.
+                  serverDir: "./server",
+                },
+          ),
+          pagesNitroInput(),
         ]
       : []),
     viteReact(),

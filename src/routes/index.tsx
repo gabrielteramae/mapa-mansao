@@ -4,10 +4,8 @@ import { AmbienceHost } from "@/components/ambience";
 import { EnterText, Hud } from "@/components/hud";
 import { RoomPills } from "@/components/mansion/overlay";
 import { useHouse } from "@/lib/house";
-import { getHouseCatalog } from "@/lib/house/catalog";
 
 export const Route = createFileRoute("/")({
-  loader: () => getHouseCatalog(),
   component: Home,
 });
 
