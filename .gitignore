@@ -1,0 +1,17 @@
+.node_modules.lock
+node_modules
+dist
+.output
+.env
+.env.*
+!.env.example
+.vercel
+.grok
+.tanstack
+artifacts
+attachments
+screenshots
+AGENTS.md
+startup.sh
+*.log
+.DS_Store

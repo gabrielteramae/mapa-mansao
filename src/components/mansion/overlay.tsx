@@ -1,0 +1,62 @@
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
+import { viewBridge } from "@/components/mansion/bridge";
+import { useHouse } from "@/lib/house";
+import type { RoomId } from "@/lib/layout";
+
+const rooms: { id: RoomId; label: string; x: number; y: number; z: number; dot: string }[] = [
+  { id: "mural", label: "Painel", x: 0.1, y: 2.4, z: -4.2, dot: "#ffd36a" },
+  { id: "setup", label: "Setup", x: -2.2, y: 1.7, z: -2.2, dot: "#7eb6ff" },
+  { id: "arena", label: "Arena", x: 0, y: 2.2, z: 0.4, dot: "#ffb15a" },
+  { id: "consoles", label: "Jogos", x: 3.6, y: 1.9, z: 2.4, dot: "#ff7a2a" },
+  { id: "lounge", label: "Lounge", x: -2.5, y: 1.3, z: 3.1, dot: "#7dffb2" },
+];
+
+export function RoomPills() {
+  const root = useRef<HTMLDivElement>(null);
+  const room = useHouse((s) => s.room);
+
+  useEffect(() => {
+    const v = new THREE.Vector3();
+    let frame = 0;
+    const loop = () => {
+      frame = requestAnimationFrame(loop);
+      const camera = viewBridge.camera;
+      const gl = viewBridge.gl;
+      const host = root.current;
+      if (!camera || !gl || !host) return;
+      const rect = gl.domElement.getBoundingClientRect();
+      rooms.forEach((spot, i) => {
+        const el = host.children[i] as HTMLElement | undefined;
+        if (!el) return;
+        v.set(spot.x, spot.y, spot.z).project(camera);
+        const behind = v.z > 1;
+        const x = (v.x * 0.5 + 0.5) * rect.width;
+        const y = (-v.y * 0.5 + 0.5) * rect.height;
+        const hidden = behind || x < -40 || y < -40 || x > rect.width + 40 || y > rect.height + 40;
+        el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+        el.style.opacity = hidden ? "0" : "1";
+      });
+    };
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-[6]">
+      <div ref={root} className="overlay-root">
+        {rooms.map((spot) => (
+          <button
+            key={spot.id}
+            type="button"
+            className={room === spot.id ? "room-tag is-on" : "room-tag"}
+            onClick={() => useHouse.getState().setRoom(spot.id)}
+          >
+            <span className="room-dot" style={{ background: spot.dot }} />
+            <strong className="text-in">{spot.label}</strong>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
