@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AmbienceHost } from "@/components/ambience";
-import { EnterText, Hud } from "@/components/hud";
+import { Hud } from "@/components/hud";
 import { RoomPills } from "@/components/mansion/overlay";
 import { useHouse } from "@/lib/house";
 
@@ -11,14 +11,14 @@ export const Route = createFileRoute("/")({
 
 const canvasReady = import("@/components/mansion/canvas");
 
-const MIN_READ = 3400;
+const MIN_READ = 2600;
 
 function Opening({ leaving }: { leaving: boolean }) {
   return (
     <div className={leaving ? "opening opening-out" : "opening"}>
-      <div className="opening-mark" />
-      <EnterText text="Mansão R6" className="opening-title font-bold" />
-      <span className="opening-sub text-in">Carregando a Mansão</span>
+      <div className="opening-mark" aria-hidden="true" />
+      <p className="opening-title">Mansão R6</p>
+      <p className="opening-sub">Carregando a Mansão</p>
     </div>
   );
 }
