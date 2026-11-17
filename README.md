@@ -12,7 +12,7 @@ Não é um jogo jogável. É a casa vista de cima, com a galera se mexendo sozin
 
 | Peça | Papel |
 |---|---|
-| Teramae, Saad, Mosca, Kaiog, Gordão, Guigui, Guilherme, Nakazone, Nishio, Maphil | Andam pela sala, sentam no sofá ou na cadeira e não entram um no outro. O Mosca usa óculos. |
+| Galera | Andam pela sala, sentam no sofá ou na cadeira e não entram um no outro. O Mosca usa óculos. |
 | Setups | Quatro bancadas pretas, cadeira gamer, gabinete, teclado e mouse com RGB. |
 | Telas | Rainbow Six, Dead by Daylight, League of Legends, Fortnite. O telão da arena abre com “Bem-vindo a Mansão R6”. |
 | Painel | Foto e o nome da mansão na parede do fundo. |
