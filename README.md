@@ -1,4 +1,4 @@
-# Mansão R6 — a game room dos dez
+# Mansão R6
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
