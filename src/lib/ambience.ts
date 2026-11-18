@@ -331,7 +331,7 @@ class Engine {
       bus.gain.value = 0;
       const filter = ctx.createBiquadFilter();
       filter.type = "lowpass";
-      filter.frequency.value = 2200;
+      filter.frequency.value = 880;
       filter.Q.value = 0.4;
       bus.connect(filter);
       filter.connect(this.master);
@@ -340,7 +340,7 @@ class Engine {
     this.musicOn = true;
     if (this.nextStep < ctx.currentTime) this.nextStep = ctx.currentTime + 0.08;
     if (!this.musicTimer) this.musicTimer = window.setInterval(() => this.pumpMusic(), 40);
-    this.ramp(this.music.gain, 0.34, 0.6);
+    this.ramp(this.music.gain, 0.22, 1.2);
   }
 
   private pumpMusic() {
@@ -348,23 +348,25 @@ class Engine {
     const dest = this.music;
     if (!ctx || !dest || !this.musicOn || !snap.want || ctx.state !== "running") return;
     if (this.nextStep < ctx.currentTime - 0.2) this.nextStep = ctx.currentTime + 0.05;
-    const step = 60 / 124 / 4;
-    while (this.nextStep < ctx.currentTime + 0.16) {
-      this.playBarStep(ctx, dest, this.stepIndex % 32, this.nextStep);
+    const step = 5.5;
+    while (this.nextStep < ctx.currentTime + 0.2) {
+      this.playPad(ctx, dest, this.stepIndex % 4, this.nextStep);
       this.nextStep += step;
       this.stepIndex += 1;
     }
   }
 
-  private playBarStep(ctx: AudioContext, dest: GainNode, step: number, time: number) {
-    const beat = step % 16;
-    const bar = Math.floor(step / 16) % 2;
-    if (beat % 4 === 0) this.note(ctx, dest, beat % 8 === 4 ? 41 : 36, time, 0.14, 0.2, "sine");
-    if (beat % 2 === 1) this.note(ctx, dest, 90, time, 0.04, 0.035, "square");
-    const bass = bar === 0 ? [40, 40, 40, 47, 35, 35, 42, 40] : [38, 38, 45, 38, 33, 33, 40, 38];
-    if (beat % 2 === 0) this.note(ctx, dest, bass[beat / 2]!, time, 0.12, 0.07, "square");
-    const lead = bar === 0 ? [64, 67, 71, 74, 71, 67, 64, 62] : [74, 71, 67, 74, 69, 67, 64, 67];
-    if (beat % 2 === 0) this.note(ctx, dest, lead[beat / 2]!, time, 0.11, 0.045, "square");
+  private playPad(ctx: AudioContext, dest: GainNode, chord: number, time: number) {
+    const chords = [
+      [48, 55, 60, 64],
+      [45, 52, 57, 60],
+      [43, 50, 55, 59],
+      [41, 48, 53, 57],
+    ];
+    for (const midi of chords[chord] ?? []) {
+      this.note(ctx, dest, midi, time, 7.2, 0.04, "sine");
+      this.note(ctx, dest, midi + 12, time, 6.4, 0.016, "triangle");
+    }
   }
 
   private note(
