@@ -17,9 +17,11 @@ export function EnterText({ text, className = "" }: { text: string; className?: 
 }
 
 const nav: { id: RoomId; label: string; dot: string }[] = [
-  { id: "geral", label: "Visão geral", dot: "#8eb4d4" },
-  { id: "consoles", label: "Jogos", dot: "#e7b89a" },
-  { id: "lounge", label: "Lounge", dot: "#9bb8c9" },
+  { id: "geral", label: "Casa", dot: "#8eb4d4" },
+  { id: "consoles", label: "Jogos", dot: "#7eb6ff" },
+  { id: "arena", label: "Meio", dot: "#ffb15a" },
+  { id: "lounge", label: "Conforto", dot: "#ff8aa0" },
+  { id: "setup", label: "PCs", dot: "#3ddc6e" },
 ];
 
 export function Hud() {
@@ -113,7 +115,7 @@ export function Hud() {
                 key={item.id}
                 type="button"
                 onClick={() => setRoom(item.id)}
-                className={`nav-pill text-in flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold text-black ${
+                className={`nav-pill text-in flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-bold text-black sm:px-3 sm:py-2 ${
                   on ? "border-transparent bg-[#b9d7f2]" : "border-black/10 bg-white"
                 }`}
                 data-on={on}

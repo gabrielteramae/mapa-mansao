@@ -13,11 +13,11 @@ import { People, Simulator } from "@/components/mansion/people";
 
 const ROOM_VIEW: Record<RoomId, { x: number; y: number; z: number; zoom: number | "fit" }> = {
   geral: { x: 0, y: 0.9, z: -0.2, zoom: "fit" },
-  setup: { x: 8.4, y: 1.1, z: -0.4, zoom: 42 },
-  consoles: { x: -8.2, y: 1.1, z: -1.6, zoom: 36 },
-  arena: { x: 1.2, y: 1, z: -3.2, zoom: 40 },
-  mural: { x: 1.4, y: 1.4, z: -4.2, zoom: 34 },
-  lounge: { x: 0.2, y: 0.9, z: 4.8, zoom: 38 },
+  setup: { x: 7.8, y: 1.2, z: -0.5, zoom: 26 },
+  consoles: { x: -8.3, y: 1.15, z: -1.7, zoom: 30 },
+  arena: { x: 1.3, y: 1.1, z: -3.4, zoom: 28 },
+  mural: { x: 1.4, y: 1.4, z: -4.2, zoom: 32 },
+  lounge: { x: 0.3, y: 1, z: 4.9, zoom: 30 },
 };
 
 function fitZoom(width: number, height: number) {

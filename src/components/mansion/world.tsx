@@ -417,7 +417,7 @@ function Zone({
     document.body.style.cursor = "pointer";
   }} onPointerOut={() => {
     document.body.style.cursor = "";
-  }}><planeGeometry args={[w, d]} /><meshStandardMaterial color={on ? "#ffd166" : "#ff8a3c"} emissive={on ? "#ff4d6d" : "#000000"} emissiveIntensity={on ? .28 : 0} roughness={1} /></mesh>;
+  }}><planeGeometry args={[w, d]} /><meshStandardMaterial color="#ffd166" emissive="#ffb703" emissiveIntensity={on ? 0.35 : 0} transparent opacity={on ? 0.16 : 0} depthWrite={false} roughness={1} /></mesh>;
 }
 function Desk({
   x,

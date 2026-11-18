@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AmbienceHost } from "@/components/ambience";
 import { Hud } from "@/components/hud";
-import { RoomPills } from "@/components/mansion/overlay";
 import { useHouse } from "@/lib/house";
 
 export const Route = createFileRoute("/")({
@@ -71,7 +70,6 @@ function Home() {
         {phase !== "done" && <Opening leaving={phase === "leave"} />}
         {phase === "done" && (
           <>
-            <RoomPills />
             <div key={frame} className="view-fade" />
             <Hud />
             <AmbienceHost />
