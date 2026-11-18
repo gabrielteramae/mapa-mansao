@@ -985,11 +985,22 @@ function shuffle<T>(list: T[]) {
   return arr;
 }
 
+const posts: Record<string, { x: number; z: number; yaw: number; sit: boolean; spot: string; room: ZoneId }> = {
+  gabriel: { x: -7.3, z: -5.6, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv", room: "consoles" },
+  saad: { x: -7.3, z: -3, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv", room: "consoles" },
+  mosca: { x: -7.3, z: -0.4, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv", room: "consoles" },
+  kaiog: { x: -1.6, z: -2.15, yaw: Math.PI, sit: false, spot: "pool", room: "arena" },
+  gordao: { x: 1.15, z: -3.55, yaw: Math.PI, sit: false, spot: "pin", room: "arena" },
+  guigui: { x: 2.85, z: -1.15, yaw: Math.PI, sit: false, spot: "hoop", room: "arena" },
+  guilherme: { x: 8.2, z: -4.65, yaw: Math.PI / 2, sit: true, spot: "pc1", room: "setup" },
+  nakazone: { x: 8.2, z: -1.35, yaw: Math.PI / 2, sit: true, spot: "pc2", room: "setup" },
+  nishio: { x: 8.2, z: 1.95, yaw: Math.PI / 2, sit: true, spot: "pc3", room: "setup" },
+  maphil: { x: -2.1, z: 4.7, yaw: Math.PI, sit: true, spot: "sofa-bar", room: "lounge" },
+};
+
 function createAgents(): Agent[] {
-  return crew.map((c, i) => {
-    const x = -7.65 + i * 1.7;
-    const z = 0.6;
-    const yaw = Math.PI;
+  return crew.map((c) => {
+    const post = posts[c.id] ?? { x: 0, z: 0, yaw: Math.PI, sit: false, spot: "still", room: "lounge" as const };
     const agent: Agent = {
       id: c.id,
       name: c.name,
@@ -1009,17 +1020,17 @@ function createAgents(): Agent[] {
       beard: c.beard,
       glasses: c.glasses,
       lines: c.lines,
-      x,
-      z,
-      yaw,
-      face: yaw,
+      x: post.x,
+      z: post.z,
+      yaw: post.yaw,
+      face: post.yaw,
       path: [],
       state: "use",
-      room: "lounge",
-      spotId: "still",
-      spotFace: yaw,
-      spotSit: false,
-      sitting: false,
+      room: post.room,
+      spotId: post.spot,
+      spotFace: post.yaw,
+      spotSit: post.sit,
+      sitting: post.sit,
       partner: null,
       seek: null,
       dwell: 1.6 + rnd() * 5,

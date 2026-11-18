@@ -5,11 +5,11 @@ import { useHouse } from "@/lib/house";
 import type { RoomId } from "@/lib/layout";
 
 const rooms: { id: RoomId; label: string; x: number; y: number; z: number; dot: string }[] = [
-  { id: "mural", label: "Painel", x: 0.1, y: 2.4, z: -4.2, dot: "#ffd36a" },
-  { id: "setup", label: "Setup", x: -2.2, y: 1.7, z: -2.2, dot: "#7eb6ff" },
-  { id: "arena", label: "Arena", x: 0, y: 2.2, z: 0.4, dot: "#ffb15a" },
-  { id: "consoles", label: "Jogos", x: 3.6, y: 1.9, z: 2.4, dot: "#ff7a2a" },
-  { id: "lounge", label: "Lounge", x: -2.5, y: 1.3, z: 3.1, dot: "#7dffb2" },
+  { id: "mural", label: "Painel", x: 1.4, y: 2.4, z: -6.2, dot: "#ffd36a" },
+  { id: "setup", label: "Setup", x: 8.4, y: 1.7, z: -0.4, dot: "#7eb6ff" },
+  { id: "arena", label: "Arena", x: 1.2, y: 2.2, z: -3.2, dot: "#ffb15a" },
+  { id: "consoles", label: "Jogos", x: -8.2, y: 1.9, z: -1.6, dot: "#ff7a2a" },
+  { id: "lounge", label: "Lounge", x: 0.2, y: 1.3, z: 5, dot: "#7dffb2" },
 ];
 
 export function RoomPills() {
