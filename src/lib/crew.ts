@@ -992,10 +992,10 @@ const posts: Record<string, { x: number; z: number; yaw: number; sit: boolean; s
   kaiog: { x: -1.6, z: -2.15, yaw: Math.PI, sit: false, spot: "pool", room: "arena" },
   gordao: { x: 1.15, z: -3.55, yaw: Math.PI, sit: false, spot: "pin", room: "arena" },
   guigui: { x: 2.85, z: -1.15, yaw: Math.PI, sit: false, spot: "hoop", room: "arena" },
-  guilherme: { x: 8.2, z: -4.65, yaw: Math.PI / 2, sit: true, spot: "pc1", room: "setup" },
-  nakazone: { x: 8.2, z: -1.35, yaw: Math.PI / 2, sit: true, spot: "pc2", room: "setup" },
-  nishio: { x: 8.2, z: 1.95, yaw: Math.PI / 2, sit: true, spot: "pc3", room: "setup" },
-  maphil: { x: -2.1, z: 4.7, yaw: Math.PI, sit: true, spot: "sofa-bar", room: "lounge" },
+  guilherme: { x: 8.2, z: -4.55, yaw: Math.PI / 2, sit: true, spot: "pc1", room: "setup" },
+  nakazone: { x: 8.2, z: -0.85, yaw: Math.PI / 2, sit: true, spot: "pc2", room: "setup" },
+  nishio: { x: 8.2, z: 2.85, yaw: Math.PI / 2, sit: true, spot: "pc3", room: "setup" },
+  maphil: { x: -2.1, z: 4.9, yaw: Math.PI, sit: true, spot: "sofa-bar", room: "lounge" },
 };
 
 function createAgents(): Agent[] {
