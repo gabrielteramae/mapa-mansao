@@ -97,6 +97,25 @@ const neon = new THREE.MeshStandardMaterial({
   emissiveIntensity: .95,
   roughness: .35
 });
+const oak = new THREE.MeshStandardMaterial({ color: "#6b4226", roughness: 0.62 });
+const fabric = new THREE.MeshStandardMaterial({ color: "#343a4a", roughness: 0.88 });
+const fabric2 = new THREE.MeshStandardMaterial({ color: "#7a3e46", roughness: 0.88 });
+const cushion = new THREE.MeshStandardMaterial({ color: "#e4ddd2", roughness: 0.82 });
+const metal = new THREE.MeshStandardMaterial({ color: "#9aa0a8", roughness: 0.32, metalness: 0.72 });
+const shadeMat = new THREE.MeshStandardMaterial({
+  color: "#ffe7a3",
+  emissive: "#ffc14d",
+  emissiveIntensity: 0.9,
+  roughness: 0.55,
+  side: THREE.DoubleSide,
+});
+const glass = new THREE.MeshStandardMaterial({
+  color: "#d7e4ea",
+  roughness: 0.08,
+  metalness: 0.15,
+  transparent: true,
+  opacity: 0.45,
+});
 const cityColors = ["#ff5d73", "#ffd166", "#2ec4b6", "#5b5bd6", "#f15bb5", "#ff9f1c", "#4cc9f0", "#9b5de5"];
 function screenTexture(title, sub) {
   const c = document.createElement("canvas");
@@ -562,37 +581,73 @@ function Extras() {
   const cases = cityColors;
   return <group><group position={[-6.35, 0, -4.15]}><mesh position={[0, .75, 0]} material={crtMat}><boxGeometry args={[.36, 1.5, 1.15]} /></mesh>{cases.map((color, i) =><mesh key={`shelf-${i}`} position={[.16, .28 + i % 4 * .32, -.4 + Math.floor(i / 4) * .7]}><boxGeometry args={[.08, .22, .28]} /><meshStandardMaterial color={color} roughness={.5} /></mesh>)}</group><group position={[4.6, 0, -4.45]}><mesh position={[0, .8, 0]} material={crtMat}><boxGeometry args={[2.2, 1.6, .32]} /></mesh>{cases.map((color, i) =><mesh key={`poster-${i}`} position={[-.8 + i % 4 * .52, .35 + Math.floor(i / 4) * .7, .14]}><boxGeometry args={[.4, .48, .08]} /><meshStandardMaterial color={color} roughness={.5} /></mesh>)}</group><mesh position={[1.15, .22, 2.65]} material={pillow}><sphereGeometry args={[.38, 16, 12]} /></mesh><mesh position={[-.35, .2, 3.25]} material={pillow2}><sphereGeometry args={[.34, 16, 12]} /></mesh><group position={[-2.35, 0, .15]}><mesh position={[0, .24, 0]} material={trim}><boxGeometry args={[.42, .08, .42]} /></mesh><mesh position={[0, .55, -.16]} material={pillow}><boxGeometry args={[.42, .46, .08]} /></mesh></group><group position={[2.45, 0, -.55]}><mesh position={[0, .24, 0]} material={trim}><boxGeometry args={[.42, .08, .42]} /></mesh><mesh position={[0, .55, -.16]} material={glow}><boxGeometry args={[.42, .46, .08]} /></mesh></group><group position={[2.35, 0, 3.7]}><mesh position={[0, .28, 0]} material={crtMat}><boxGeometry args={[1.6, .5, .46]} /></mesh>{["#7c5cff", "#e8b15a", "#c4a2ff"].map((color, i) =><group key={color} position={[-.48 + i * .48, .68, 0]}><mesh material={crtMat}><boxGeometry args={[.38, .32, .28]} /></mesh><mesh position={[0, 0, .15]}><planeGeometry args={[.28, .18]} /><meshBasicMaterial color={color} toneMapped={false} /></mesh></group>)} <mesh position={[0, .08, .28]} material={neon}><boxGeometry args={[1.45, .04, .04]} /></mesh></group><group position={[5.15, 0, -2.35]}><mesh position={[0, .28, 0]} material={dark}><boxGeometry args={[.55, .5, .55]} /></mesh><mesh position={[0, .62, -.18]} material={pillow}><boxGeometry args={[.5, .4, .1]} /></mesh><mesh position={[0, .58, .32]} rotation={[.5, 0, 0]} material={crtMat}><torusGeometry args={[.18, .035, 8, 16]} /></mesh></group>{[-1.7, 1.7].map(x =><group key={x} position={[x, 0, -.35]}><mesh position={[0, .45, 0]} material={crtMat}><boxGeometry args={[.26, .9, .26]} /></mesh><mesh position={[0, .7, .14]} material={neon}><boxGeometry args={[.16, .1, .02]} /></mesh></group>)}</group>;
 }
+function Sofa({ mat, wide = 1.7 }) {
+  const hx = wide / 2 - 0.1;
+  return (
+    <group>
+      {[[-hx, -0.26], [hx, -0.26], [-hx, 0.26], [hx, 0.26]].map(([x, z]) => (
+        <mesh key={`${x}-${z}`} position={[x, 0.16, z]} material={metal}>
+          <cylinderGeometry args={[0.03, 0.03, 0.32, 6]} />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.36, 0]} material={mat}>
+        <boxGeometry args={[wide, 0.18, 0.7]} />
+      </mesh>
+      <mesh position={[0, 0.58, 0.26]} material={mat}>
+        <boxGeometry args={[wide, 0.32, 0.14]} />
+      </mesh>
+      <mesh position={[-wide / 2 + 0.07, 0.48, 0]} material={mat}>
+        <boxGeometry args={[0.1, 0.26, 0.7]} />
+      </mesh>
+      <mesh position={[wide / 2 - 0.07, 0.48, 0]} material={mat}>
+        <boxGeometry args={[0.1, 0.26, 0.7]} />
+      </mesh>
+      <mesh position={[-0.28, 0.48, -0.02]} material={cushion}>
+        <boxGeometry args={[0.48, 0.08, 0.4]} />
+      </mesh>
+      <mesh position={[0.28, 0.48, -0.02]} material={cushion}>
+        <boxGeometry args={[0.48, 0.08, 0.4]} />
+      </mesh>
+    </group>
+  );
+}
+
 function TvLounge({ z, map }) {
   return (
     <group position={[-9.2, 0, z]}>
-      <mesh position={[-0.55, 1.28, 0]} rotation={[0, Math.PI / 2, 0]} material={trim}>
-        <boxGeometry args={[1.55, 0.9, 0.06]} />
+      <mesh position={[-0.15, 0.28, 0]} material={oak}>
+        <boxGeometry args={[0.42, 0.46, 1.45]} />
       </mesh>
-      <mesh position={[-0.5, 1.28, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[1.4, 0.76]} />
-        <meshBasicMaterial map={map ?? undefined} color={map ? "#fff" : "#1a1030"} toneMapped={false} />
+      <mesh position={[-0.15, 0.54, 0]} material={oak}>
+        <boxGeometry args={[0.48, 0.04, 1.52]} />
       </mesh>
-      <mesh position={[-0.55, 0.62, 0]} material={trim}>
-        <boxGeometry args={[0.08, 0.55, 0.08]} />
+      <mesh position={[-0.22, 1.22, 0]} rotation={[0, Math.PI / 2, 0]} material={dark}>
+        <boxGeometry args={[1.42, 0.84, 0.05]} />
       </mesh>
-      <mesh position={[-0.35, 0.32, 0]} material={dark}>
-        <boxGeometry args={[0.55, 0.22, 1.35]} />
+      <mesh position={[-0.18, 1.22, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[1.26, 0.7]} />
+        <meshBasicMaterial map={map ?? undefined} color={map ? "#ffffff" : "#101018"} toneMapped={false} />
       </mesh>
-      <mesh position={[-0.32, 0.52, -0.32]} material={cream}>
-        <boxGeometry args={[0.16, 0.22, 0.34]} />
+      {[-0.42, 0.42].map((dz) => (
+        <mesh key={dz} position={[-0.2, 0.72, dz]} material={metal}>
+          <boxGeometry args={[0.04, 0.16, 0.16]} />
+        </mesh>
+      ))}
+      <mesh position={[-0.05, 0.72, -0.42]} material={cream}>
+        <boxGeometry args={[0.12, 0.32, 0.22]} />
       </mesh>
-      <mesh position={[-0.32, 0.48, 0.34]} material={dark}>
-        <boxGeometry args={[0.28, 0.1, 0.28]} />
+      <mesh position={[-0.05, 0.72, -0.42]} material={dark}>
+        <boxGeometry args={[0.02, 0.26, 0.08]} />
       </mesh>
-      <mesh position={[-0.32, 0.54, 0.34]} material={neon}>
-        <boxGeometry args={[0.16, 0.02, 0.16]} />
+      <mesh position={[-0.02, 0.62, 0.42]} material={dark}>
+        <boxGeometry args={[0.22, 0.07, 0.32]} />
       </mesh>
-      <mesh position={[1.7, 0.36, 0]} material={arcadeMat}>
-        <boxGeometry args={[0.7, 0.32, 1.55]} />
+      <mesh position={[-0.02, 0.66, 0.42]} material={neon}>
+        <boxGeometry args={[0.12, 0.015, 0.12]} />
       </mesh>
-      <mesh position={[1.98, 0.66, 0]} material={arcadeMat}>
-        <boxGeometry args={[0.16, 0.4, 1.55]} />
-      </mesh>
+      <group position={[1.85, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <Sofa mat={fabric} />
+      </group>
     </group>
   );
 }
@@ -600,15 +655,27 @@ function TvLounge({ z, map }) {
 function Pinball({ x, z, color }) {
   return (
     <group position={[x, 0, z]}>
-      <mesh position={[0, 0.85, 0]} material={crtMat}>
-        <boxGeometry args={[0.72, 1.55, 1.05]} />
+      {[[-0.28, -0.4], [0.28, -0.4], [-0.28, 0.35], [0.28, 0.35]].map(([lx, lz]) => (
+        <mesh key={`${lx}-${lz}`} position={[lx, 0.32, lz]} material={metal}>
+          <cylinderGeometry args={[0.03, 0.03, 0.64, 6]} />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.7, -0.05]} material={dark}>
+        <boxGeometry args={[0.7, 0.16, 1.15]} />
       </mesh>
-      <mesh position={[0, 1.15, 0.32]} rotation={[-0.55, 0, 0]}>
-        <planeGeometry args={[0.55, 0.85]} />
+      <mesh position={[0, 0.95, 0.05]} rotation={[-0.42, 0, 0]} material={glass}>
+        <boxGeometry args={[0.58, 0.02, 0.9]} />
+      </mesh>
+      <mesh position={[0, 0.9, 0.02]} rotation={[-0.42, 0, 0]}>
+        <planeGeometry args={[0.52, 0.78]} />
         <meshBasicMaterial color={color} toneMapped={false} />
       </mesh>
-      <mesh position={[0, 0.42, 0.48]} material={neon}>
-        <boxGeometry args={[0.5, 0.05, 0.08]} />
+      <mesh position={[0, 1.35, -0.48]} material={dark}>
+        <boxGeometry args={[0.7, 0.55, 0.12]} />
+      </mesh>
+      <mesh position={[0, 1.48, -0.4]}>
+        <planeGeometry args={[0.52, 0.22]} />
+        <meshBasicMaterial color={color} toneMapped={false} />
       </mesh>
     </group>
   );
@@ -617,14 +684,23 @@ function Pinball({ x, z, color }) {
 function Hoop({ x, z }) {
   return (
     <group position={[x, 0, z]}>
-      <mesh position={[0, 1.15, 0]} material={arcadeMat}>
-        <boxGeometry args={[0.9, 2.15, 0.62]} />
+      <mesh position={[0, 0.45, 0]} material={dark}>
+        <boxGeometry args={[0.85, 0.9, 0.7]} />
       </mesh>
-      <mesh position={[0, 1.72, 0.28]} material={lamp}>
-        <torusGeometry args={[0.2, 0.028, 8, 16]} />
+      <mesh position={[0, 1.35, -0.12]} material={cream}>
+        <boxGeometry args={[0.7, 0.85, 0.05]} />
       </mesh>
-      <mesh position={[0, 0.48, 0.22]} material={lamp}>
-        <sphereGeometry args={[0.11, 12, 10]} />
+      <mesh position={[0, 1.15, 0.02]} material={lamp}>
+        <torusGeometry args={[0.16, 0.02, 8, 16]} />
+      </mesh>
+      <mesh position={[0, 0.95, 0.08]} material={trim}>
+        <cylinderGeometry args={[0.1, 0.16, 0.28, 8]} />
+      </mesh>
+      <mesh position={[0, 0.55, 0.28]} material={lamp}>
+        <sphereGeometry args={[0.09, 12, 10]} />
+      </mesh>
+      <mesh position={[0, 1.55, -0.08]} material={arcadeMat}>
+        <boxGeometry args={[0.28, 0.1, 0.02]} />
       </mesh>
     </group>
   );
@@ -633,34 +709,108 @@ function Hoop({ x, z }) {
 function GamingDesk({ z, color }) {
   return (
     <group position={[9.2, 0, z]}>
-      <mesh position={[0.15, 0.74, 0]} material={dark}>
-        <boxGeometry args={[0.72, 0.06, 1.2]} />
+      <mesh position={[0.2, 0.74, 0]} material={dark}>
+        <boxGeometry args={[0.62, 0.045, 1.15]} />
       </mesh>
-      <mesh position={[0.42, 0.4, 0]} material={trim}>
-        <boxGeometry args={[0.06, 0.68, 1.05]} />
+      <mesh position={[0.42, 0.38, -0.48]} material={trim}>
+        <boxGeometry args={[0.04, 0.72, 0.04]} />
       </mesh>
-      <mesh position={[0.42, 1.18, 0]} rotation={[0, -Math.PI / 2, 0]} material={trim}>
-        <boxGeometry args={[1.05, 0.62, 0.05]} />
+      <mesh position={[0.42, 0.38, 0.48]} material={trim}>
+        <boxGeometry args={[0.04, 0.72, 0.04]} />
       </mesh>
-      <mesh position={[0.38, 1.18, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <planeGeometry args={[0.96, 0.52]} />
+      <mesh position={[0.28, 0.86, 0]} material={metal}>
+        <cylinderGeometry args={[0.02, 0.025, 0.16, 6]} />
+      </mesh>
+      <mesh position={[0.36, 1.16, 0]} rotation={[0, -Math.PI / 2, 0]} material={dark}>
+        <boxGeometry args={[1.02, 0.6, 0.04]} />
+      </mesh>
+      <mesh position={[0.33, 1.16, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <planeGeometry args={[0.92, 0.5]} />
         <meshBasicMaterial color={color} toneMapped={false} />
       </mesh>
-      <mesh position={[0.05, 0.8, 0.15]} material={rgbKeys}>
-        <boxGeometry args={[0.22, 0.03, 0.42]} />
+      <mesh position={[0.08, 0.79, 0.12]} material={rgbKeys}>
+        <boxGeometry args={[0.16, 0.02, 0.38]} />
       </mesh>
-      <mesh position={[0.02, 0.8, -0.32]} material={rgbStrip}>
-        <boxGeometry args={[0.12, 0.03, 0.18]} />
+      <mesh position={[0.06, 0.79, -0.28]} material={trim}>
+        <boxGeometry args={[0.16, 0.012, 0.2]} />
       </mesh>
-      <mesh position={[-0.05, 0.95, 0.42]} material={rgbCase}>
-        <boxGeometry args={[0.22, 0.42, 0.38]} />
+      <mesh position={[0.04, 0.8, -0.28]} material={rgbStrip}>
+        <boxGeometry args={[0.08, 0.015, 0.12]} />
       </mesh>
-      <mesh position={[-0.85, 0.46, 0]} material={trim}>
-        <boxGeometry args={[0.46, 0.08, 0.46]} />
+      <mesh position={[0.42, 0.26, 0.42]} material={rgbCase}>
+        <boxGeometry args={[0.2, 0.48, 0.4]} />
       </mesh>
-      <mesh position={[-0.85, 0.72, 0.18]} material={trim}>
-        <boxGeometry args={[0.46, 0.5, 0.08]} />
+      <mesh position={[0.3, 0.18, 0.42]} material={dark}>
+        <boxGeometry args={[0.04, 0.08, 0.28]} />
       </mesh>
+      <group position={[-1, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh position={[0, 0.08, 0]} rotation={[-Math.PI / 2, 0, 0]} material={metal}>
+          <cylinderGeometry args={[0.22, 0.22, 0.03, 8]} />
+        </mesh>
+        <mesh position={[0, 0.28, 0]} material={metal}>
+          <cylinderGeometry args={[0.03, 0.03, 0.36, 6]} />
+        </mesh>
+        <mesh position={[0, 0.5, 0]} material={trim}>
+          <boxGeometry args={[0.42, 0.07, 0.42]} />
+        </mesh>
+        <mesh position={[0, 0.78, 0.16]} material={trim}>
+          <boxGeometry args={[0.4, 0.48, 0.07]} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+function CoffeeTable({ w = 1.05, d = 0.55 }) {
+  return (
+    <group>
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz], i) => (
+        <mesh key={i} position={[sx * (w * 0.42), 0.2, sz * (d * 0.38)]} material={oak}>
+          <boxGeometry args={[0.045, 0.4, 0.045]} />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.42, 0]} material={oak}>
+        <boxGeometry args={[w, 0.05, d]} />
+      </mesh>
+    </group>
+  );
+}
+
+function SeatChair({ x, z, rot = 0 }) {
+  return (
+    <group position={[x, 0, z]} rotation={[0, rot, 0]}>
+      {[[-0.14, -0.14], [0.14, -0.14], [-0.14, 0.14], [0.14, 0.14]].map(([lx, lz]) => (
+        <mesh key={`${lx}-${lz}`} position={[lx, 0.22, lz]} material={oak}>
+          <boxGeometry args={[0.04, 0.44, 0.04]} />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.46, 0]} material={cushion}>
+        <boxGeometry args={[0.4, 0.05, 0.4]} />
+      </mesh>
+      <mesh position={[0, 0.72, 0.16]} material={oak}>
+        <boxGeometry args={[0.4, 0.42, 0.05]} />
+      </mesh>
+    </group>
+  );
+}
+
+function Abajur({ x, z }) {
+  return (
+    <group position={[x, 0, z]}>
+      <mesh position={[0, 0.04, 0]} material={metal}>
+        <cylinderGeometry args={[0.16, 0.2, 0.06, 12]} />
+      </mesh>
+      <mesh position={[0, 0.72, 0]} material={metal}>
+        <cylinderGeometry args={[0.025, 0.025, 1.3, 8]} />
+      </mesh>
+      <mesh position={[0, 1.42, 0]} material={shadeMat}>
+        <cylinderGeometry args={[0.16, 0.32, 0.28, 16, 1, true]} />
+      </mesh>
+      <mesh position={[0, 1.38, 0]}>
+        <sphereGeometry args={[0.07, 10, 8]} />
+        <meshBasicMaterial color="#fff1c2" />
+      </mesh>
+      <pointLight position={[0, 1.3, 0]} color="#ffd15a" intensity={28} distance={8} decay={2} />
     </group>
   );
 }
@@ -689,8 +839,17 @@ function LedRails() {
       <mesh position={[-9.55, 0.07, -1.6]} material={rgbKeys}>
         <boxGeometry args={[0.05, 0.04, 8.8]} />
       </mesh>
-      <mesh position={[-1.6, 0.78, -3.4]} material={rgbCase}>
-        <boxGeometry args={[2.28, 0.035, 1.28]} />
+      <mesh position={[-1.6, 0.8, -2.78]} material={rgbCase}>
+        <boxGeometry args={[2.2, 0.03, 0.04]} />
+      </mesh>
+      <mesh position={[-1.6, 0.8, -4.02]} material={rgbCase}>
+        <boxGeometry args={[2.2, 0.03, 0.04]} />
+      </mesh>
+      <mesh position={[-2.68, 0.8, -3.4]} material={rgbCase}>
+        <boxGeometry args={[0.04, 0.03, 1.2]} />
+      </mesh>
+      <mesh position={[-0.52, 0.8, -3.4]} material={rgbCase}>
+        <boxGeometry args={[0.04, 0.03, 1.2]} />
       </mesh>
       <mesh position={[3.6, 0.22, 5.42]} material={rgbStrip}>
         <boxGeometry args={[1.52, 0.035, 0.04]} />
@@ -715,17 +874,33 @@ function RoomSet({ screens }) {
         <TvLounge key={z} z={z} map={screens[i] ?? null} />
       ))}
       <group position={[-1.6, 0, -3.4]}>
-        <mesh position={[0, 0.72, 0]} material={leaf}>
-          <boxGeometry args={[2.2, 0.08, 1.2]} />
+        {[[-0.95, -0.48], [0.95, -0.48], [-0.95, 0.48], [0.95, 0.48]].map(([x, z]) => (
+          <mesh key={`${x}-${z}`} position={[x, 0.36, z]} material={oak}>
+            <boxGeometry args={[0.08, 0.72, 0.08]} />
+          </mesh>
+        ))}
+        <mesh position={[0, 0.7, 0]} material={oak}>
+          <boxGeometry args={[2.35, 0.16, 1.35]} />
         </mesh>
-        <mesh position={[0, 0.4, 0]} material={dark}>
-          <boxGeometry args={[2.05, 0.55, 1.05]} />
+        <mesh position={[0, 0.8, 0]} material={felt}>
+          <boxGeometry args={[2.05, 0.04, 1.05]} />
         </mesh>
-        <mesh position={[0.35, 0.8, 0.15]} material={lamp}>
-          <sphereGeometry args={[0.06, 10, 10]} />
+        {[[-0.95, -0.45], [0.95, -0.45], [-0.95, 0.45], [0.95, 0.45], [0, -0.48], [0, 0.48]].map(([x, z]) => (
+          <mesh key={`p-${x}-${z}`} position={[x, 0.8, z]} material={dark}>
+            <sphereGeometry args={[0.07, 10, 8]} />
+          </mesh>
+        ))}
+        <mesh position={[0.3, 0.86, 0.1]} material={lamp}>
+          <sphereGeometry args={[0.045, 8, 8]} />
         </mesh>
-        <mesh position={[-0.2, 0.8, -0.1]} material={cream}>
-          <sphereGeometry args={[0.06, 10, 10]} />
+        <mesh position={[-0.15, 0.86, -0.08]} material={cream}>
+          <sphereGeometry args={[0.045, 8, 8]} />
+        </mesh>
+        <mesh position={[-0.05, 0.86, 0.22]} material={glow}>
+          <sphereGeometry args={[0.045, 8, 8]} />
+        </mesh>
+        <mesh position={[1.28, 0.82, 0]} rotation={[0, 0, 0.4]} material={oak}>
+          <boxGeometry args={[0.04, 0.04, 1.15]} />
         </mesh>
       </group>
       <Pinball x={1.15} z={-4.7} color="#ff4fd8" />
@@ -734,51 +909,56 @@ function RoomSet({ screens }) {
       <Hoop x={1.15} z={-2.3} />
       <Hoop x={2.85} z={-2.3} />
       <Hoop x={4.55} z={-2.3} />
-      <mesh position={[-2.1, 0.36, 4.85]} material={pillow}>
-        <boxGeometry args={[1.8, 0.32, 0.75]} />
-      </mesh>
-      <mesh position={[-2.1, 0.66, 5.15]} material={pillow}>
-        <boxGeometry args={[1.8, 0.4, 0.16]} />
-      </mesh>
-      <mesh position={[0.7, 0.36, 4.85]} material={arcadeMat}>
-        <boxGeometry args={[1.6, 0.32, 0.75]} />
-      </mesh>
-      <mesh position={[0.7, 0.66, 5.15]} material={arcadeMat}>
-        <boxGeometry args={[1.6, 0.4, 0.16]} />
-      </mesh>
-      <mesh position={[-0.4, 0.38, 3.7]} material={trim}>
-        <boxGeometry args={[1.1, 0.08, 0.6]} />
-      </mesh>
-      <mesh position={[1.5, 0.38, 5.7]} material={trim}>
-        <boxGeometry args={[0.9, 0.08, 0.55]} />
-      </mesh>
-      <mesh position={[3.6, 0.55, 5.7]} material={dark}>
-        <boxGeometry args={[1.5, 1.05, 0.55]} />
-      </mesh>
-      <mesh position={[3.6, 1.12, 5.7]} material={lamp}>
-        <boxGeometry args={[1.55, 0.06, 0.6]} />
-      </mesh>
-      <mesh position={[-4.1, 0.28, 6.1]} material={pillow2}>
+      <group position={[-2.1, 0, 4.85]}>
+        <Sofa mat={fabric2} wide={1.8} />
+      </group>
+      <group position={[0.7, 0, 4.85]}>
+        <Sofa mat={fabric} wide={1.6} />
+      </group>
+      <group position={[-0.4, 0, 3.7]}>
+        <CoffeeTable />
+        <mesh position={[0.2, 0.52, 0]} material={oak}>
+          <boxGeometry args={[0.22, 0.03, 0.16]} />
+        </mesh>
+        <mesh position={[-0.18, 0.58, 0.05]} material={glass}>
+          <cylinderGeometry args={[0.05, 0.06, 0.16, 8]} />
+        </mesh>
+      </group>
+      <group position={[1.5, 0, 5.7]}>
+        <CoffeeTable w={0.9} d={0.5} />
+      </group>
+      <group position={[3.6, 0, 5.7]}>
+        <mesh position={[0, 0.5, 0]} material={oak}>
+          <boxGeometry args={[1.55, 0.9, 0.5]} />
+        </mesh>
+        <mesh position={[0, 0.98, 0]} material={dark}>
+          <boxGeometry args={[1.65, 0.06, 0.58]} />
+        </mesh>
+        <mesh position={[-0.4, 1.16, 0]} material={glass}>
+          <cylinderGeometry args={[0.04, 0.05, 0.22, 8]} />
+        </mesh>
+        <mesh position={[0, 1.2, 0]} material={leaf}>
+          <cylinderGeometry args={[0.035, 0.04, 0.28, 8]} />
+        </mesh>
+        <mesh position={[0.4, 1.12, 0]} material={glow}>
+          <cylinderGeometry args={[0.04, 0.045, 0.16, 8]} />
+        </mesh>
+      </group>
+      <mesh position={[-4.1, 0.22, 6.1]} scale={[1, 0.72, 1]} material={pillow2}>
         <sphereGeometry args={[0.38, 16, 12]} />
       </mesh>
-      <mesh position={[-3.1, 0.26, 5.5]} material={glow}>
+      <mesh position={[-3.1, 0.2, 5.45]} scale={[1, 0.7, 1]} material={pillow}>
         <sphereGeometry args={[0.34, 16, 12]} />
       </mesh>
-      <mesh position={[2.3, 0.28, 6.15]} material={pillow}>
+      <mesh position={[2.3, 0.22, 6.15]} scale={[1, 0.72, 1]} material={glow}>
         <sphereGeometry args={[0.36, 16, 12]} />
       </mesh>
-      <mesh position={[-0.7, 0.46, 6.15]} material={trim}>
-        <boxGeometry args={[0.42, 0.08, 0.42]} />
-      </mesh>
-      <mesh position={[-0.7, 0.72, 6.32]} material={trim}>
-        <boxGeometry args={[0.42, 0.46, 0.08]} />
-      </mesh>
-      <mesh position={[1.7, 0.46, 3.55]} material={cream}>
-        <boxGeometry args={[0.42, 0.08, 0.42]} />
-      </mesh>
-      <mesh position={[1.7, 0.72, 3.38]} material={cream}>
-        <boxGeometry args={[0.42, 0.46, 0.08]} />
-      </mesh>
+      <SeatChair x={-0.7} z={6.15} rot={0} />
+      <SeatChair x={1.7} z={3.55} rot={Math.PI} />
+      <Abajur x={-9.7} z={-7.05} />
+      <Abajur x={9.7} z={-7.05} />
+      <Abajur x={-9.7} z={6.7} />
+      <Abajur x={9.5} z={6.7} />
       {pcZ.map((z, i) => (
         <GamingDesk key={z} z={z} color={pcColors[i]} />
       ))}
