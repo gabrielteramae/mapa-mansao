@@ -413,9 +413,9 @@ function Person({ index }: { index: number }) {
           <mesh
             geometry={torsoGeo}
             material={agent.top === "bare" ? skin : shirt}
-            scale={[1.4, 1, 0.86]}
+            scale={agent.id === "saad" ? [1.02, 1, 0.52] : [1.4, 1, 0.86]}
           />
-          {agent.top === "hoodie" && (
+          {agent.top === "hoodie" && agent.id !== "saad" && (
             <mesh position={[0, -0.06, 0.15]} material={shirt}>
               <boxGeometry args={[0.2, 0.14, 0.04]} />
             </mesh>
