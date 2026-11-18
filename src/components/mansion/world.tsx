@@ -545,12 +545,7 @@ function BannerPlane() {
     const group = ref.current;
     if (!group) return;
     if (lamp.current && aim.current) lamp.current.target = aim.current;
-    const {
-      playing,
-      speed
-    } = useHouse.getState();
-    if (!playing) return;
-    const t = (group.userData.t ?? 0) + Math.min(dt, .05) * speed;
+    const t = (group.userData.t ?? 0) + Math.min(dt, .05);
     group.userData.t = t;
     wave(flagA.current, t);
     wave(flagB.current, t);
