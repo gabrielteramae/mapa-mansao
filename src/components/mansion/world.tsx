@@ -376,12 +376,12 @@ function useScreens() {
   useEffect(() => {
     let dead = false;
     const sources = [
-      "screens/r6.jpg?v=3",
-      "screens/fortnite.jpg?v=3",
-      "screens/overwatch.jpg?v=3",
-      "screens/dbd.jpg?v=3",
-      "screens/cs2.jpg?v=3",
-      "screens/lol.jpg?v=3",
+      "screens/ow2.jpg?v=4",
+      "screens/overcooked.jpg?v=4",
+      "screens/fortnite-tv.jpg?v=4",
+      "screens/r6x.jpg?v=4",
+      "screens/cs2.jpg?v=4",
+      "screens/lol.jpg?v=4",
     ].map((file) => `${import.meta.env.BASE_URL}${file}`);
     void Promise.all(sources.map(loadCover)).then(maps => {
       if (!dead) setPhotos(maps);
@@ -1012,16 +1012,17 @@ function GamingDesk({ z, color, map }) {
     </group>
   );
 }
-function CoffeeTable({ w = 1.05, d = 0.55 }) {
+function Pouf({ mat }) {
   return (
     <group>
-      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz], i) => (
-        <mesh key={i} position={[sx * (w * 0.42), 0.2, sz * (d * 0.38)]} material={oak}>
-          <boxGeometry args={[0.045, 0.4, 0.045]} />
-        </mesh>
-      ))}
-      <mesh position={[0, 0.42, 0]} material={oak}>
-        <boxGeometry args={[w, 0.05, d]} />
+      <mesh position={[0, 0.28, 0]} scale={[1.15, 0.62, 0.95]} material={mat}>
+        <sphereGeometry args={[0.46, 14, 10]} />
+      </mesh>
+      <mesh position={[0.28, 0.3, 0.06]} scale={[0.72, 0.5, 0.8]} material={mat}>
+        <sphereGeometry args={[0.34, 12, 8]} />
+      </mesh>
+      <mesh position={[-0.22, 0.26, -0.1]} scale={[0.6, 0.46, 0.75]} material={mat}>
+        <sphereGeometry args={[0.3, 10, 8]} />
       </mesh>
     </group>
   );
@@ -1174,14 +1175,14 @@ function RoomSet({ tvs, monitors }) {
         <Sofa mat={beige} wide={1.7} />
       </group>
       {[
-        [-3.4, 1.2, pillow2],
-        [-0.8, 2.3, pillow],
-        [1.6, 0.4, beige],
-        [3.1, 2.1, glow],
-      ].map(([x, z, mat], i) => (
-        <mesh key={i} position={[x, 0.32, z]} scale={[1.15, 0.72, 1.15]} material={mat}>
-          <sphereGeometry args={[0.55, 18, 12]} />
-        </mesh>
+        [-3.4, 1.2, pillow2, 0.2],
+        [-0.8, 2.3, pillow, 1.1],
+        [1.6, 0.4, beige, 2.2],
+        [3.1, 2.1, glow, 0.6],
+      ].map(([x, z, mat, rot], i) => (
+        <group key={i} position={[x, 0, z]} rotation={[0, rot, 0]}>
+          <Pouf mat={mat} />
+        </group>
       ))}
       <group position={[4.2, 0, 6.4]}>
         <mesh position={[0, 0.55, 0]} material={dark}>
@@ -1224,11 +1225,53 @@ function RoomSet({ tvs, monitors }) {
             <pointLight position={[x, 1.45, -0.05]} color="#ffb15a" intensity={6} distance={3.2} decay={2} />
           </group>
         ))}
-        {[-1.1, -0.4, 0.35, 1.05].map((x, i) => (
-          <mesh key={`glass-${x}`} position={[x, 1.16, -0.05]} material={i % 2 ? glass : cream}>
-            <cylinderGeometry args={[0.04, 0.035, 0.08, 8]} />
+        {[-1.1, -0.55, 0.1, 0.7].map((x, i) => (
+          <mesh key={`cup-${x}`} position={[x, 1.18, -0.08]} material={glass}>
+            <cylinderGeometry args={[0.045, 0.035, 0.12, 10]} />
           </mesh>
         ))}
+        <mesh position={[1.15, 1.2, 0.05]} material={metal}>
+          <cylinderGeometry args={[0.14, 0.12, 0.16, 10]} />
+        </mesh>
+        {[-0.04, 0.05, 0].map((x, i) => (
+          <mesh key={`ice-${i}`} position={[1.15 + x, 1.3, 0.02]}>
+            <boxGeometry args={[0.05, 0.05, 0.05]} />
+            <meshStandardMaterial color="#e7f4ff" roughness={0.15} />
+          </mesh>
+        ))}
+        {[-1.55, -1.25, -0.95].map((x, i) => (
+          <mesh key={`beer-${x}`} position={[x, 1.22, 0.12]} material={ballYellow}>
+            <cylinderGeometry args={[0.035, 0.04, 0.16, 8]} />
+          </mesh>
+        ))}
+        <mesh position={[-0.2, 1.26, 0.16]} material={leaf}>
+          <cylinderGeometry args={[0.04, 0.045, 0.24, 8]} />
+        </mesh>
+        <mesh position={[0.25, 1.24, 0.12]} material={glass}>
+          <cylinderGeometry args={[0.035, 0.04, 0.22, 8]} />
+        </mesh>
+        <group position={[2.45, 0, 0.05]}>
+          <mesh position={[0, 0.85, 0]} material={cream}>
+            <boxGeometry args={[0.7, 1.7, 0.62]} />
+          </mesh>
+          <mesh position={[0, 1.15, 0.32]} material={dark}>
+            <boxGeometry args={[0.62, 0.9, 0.02]} />
+          </mesh>
+          <mesh position={[0.28, 1.15, 0.34]} material={metal}>
+            <boxGeometry args={[0.03, 0.28, 0.03]} />
+          </mesh>
+        </group>
+        <group position={[2.55, 0, -0.7]}>
+          <mesh position={[0, 0.38, 0]} material={dark}>
+            <boxGeometry args={[0.42, 0.7, 0.4]} />
+          </mesh>
+          <mesh position={[0, 0.38, 0.21]} material={trim}>
+            <boxGeometry args={[0.34, 0.52, 0.02]} />
+          </mesh>
+          <mesh position={[0.14, 0.4, 0.23]} material={metal}>
+            <boxGeometry args={[0.02, 0.16, 0.02]} />
+          </mesh>
+        </group>
         {[-1.3, -0.4, 0.5, 1.4].map((x) => (
           <group key={`stool-${x}`} position={[x, 0, -0.85]}>
             <mesh position={[0, 0.38, 0]} material={metal}>
