@@ -16,7 +16,7 @@ const ROOM_VIEW: Record<RoomId, { x: number; y: number; z: number; zoom: number 
   setup: { x: 7.8, y: 1.2, z: -0.5, zoom: 26 },
   consoles: { x: -8.3, y: 1.15, z: -1.7, zoom: 30 },
   arena: { x: 1.3, y: 1.1, z: -3.4, zoom: 28 },
-  mural: { x: 1.4, y: 1.4, z: -4.2, zoom: 32 },
+  mural: { x: 0, y: 1.4, z: -4.2, zoom: 32 },
   lounge: { x: 0.3, y: 1, z: 4.9, zoom: 30 },
 };
 

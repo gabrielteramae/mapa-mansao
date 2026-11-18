@@ -12,12 +12,12 @@ const SERVER_SNAP: AmbienceSnap = { want: true, live: false };
 type Layer = "air" | "whir" | "screen" | "drone" | "warm" | "tv" | "sub";
 
 const MIX: Record<RoomId, Record<Layer, number>> = {
-  geral: { air: 0.34, whir: 0.22, screen: 0.16, drone: 0.08, warm: 0.14, tv: 0.2, sub: 0.12 },
-  setup: { air: 0.16, whir: 0.72, screen: 0.48, drone: 0.04, warm: 0.03, tv: 0.06, sub: 0.05 },
-  consoles: { air: 0.18, whir: 0.1, screen: 0.34, drone: 0.08, warm: 0.1, tv: 0.78, sub: 0.42 },
-  arena: { air: 0.12, whir: 0.36, screen: 0.28, drone: 0.7, warm: 0.04, tv: 0.3, sub: 0.74 },
-  mural: { air: 0.42, whir: 0.04, screen: 0.04, drone: 0.03, warm: 0.62, tv: 0.05, sub: 0.04 },
-  lounge: { air: 0.3, whir: 0.08, screen: 0.1, drone: 0.04, warm: 0.5, tv: 0.22, sub: 0.16 },
+  geral: { air: 0, whir: 0, screen: 0, drone: 0, warm: 0, tv: 0, sub: 0 },
+  setup: { air: 0, whir: 0, screen: 0, drone: 0, warm: 0, tv: 0, sub: 0 },
+  consoles: { air: 0, whir: 0, screen: 0, drone: 0, warm: 0, tv: 0, sub: 0 },
+  arena: { air: 0, whir: 0, screen: 0, drone: 0, warm: 0, tv: 0, sub: 0 },
+  mural: { air: 0, whir: 0, screen: 0, drone: 0, warm: 0, tv: 0, sub: 0 },
+  lounge: { air: 0, whir: 0, screen: 0, drone: 0, warm: 0, tv: 0, sub: 0 },
 };
 
 type SnapListener = () => void;
@@ -401,29 +401,7 @@ class Engine {
   }
 
   private spice() {
-    if (!snap.live || !snap.want || !this.ctx || this.ctx.state !== "running") return;
-    const room = this.room;
-    const roll = Math.random();
-    if (room === "setup" && roll < 0.34) this.key();
-    else if (room === "arena" && roll < 0.2) this.key();
-    else if (room === "geral" && roll < 0.08) this.key();
-    else if ((room === "setup" || room === "geral") && roll > 0.96) this.tick(2100, 0.018, 0.045);
-
-    if (room === "consoles" && Math.random() < 0.07) this.blip();
-    else if ((room === "arena" || room === "lounge" || room === "geral") && Math.random() < 0.03)
-      this.blip();
-
-    if (room === "arena" && Math.random() < 0.014) this.roundCue();
-    if (
-      (room === "lounge" || room === "geral") &&
-      Math.random() < (room === "lounge" ? 0.035 : 0.012)
-    )
-      this.fridge();
-    if ((room === "lounge" || room === "mural") && Math.random() < 0.02) this.creak();
-
-    const feet =
-      room === "geral" ? 0.16 : room === "lounge" ? 0.08 : room === "mural" ? 0.035 : 0.02;
-    if (Math.random() < feet) this.foot();
+    return;
   }
 
   private key() {

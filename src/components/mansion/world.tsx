@@ -372,12 +372,17 @@ function gamePoster(title, a, b) {
   return tex;
 }
 function useScreens() {
-  const [photos, setPhotos] = useState([null, null, null, null]);
-  const overwatch = useMemo(() => gamePoster("OVERWATCH", "#f99e1a", "#243447"), []);
-  const cs2 = useMemo(() => gamePoster("CS2", "#e0a24a", "#161616"), []);
+  const [photos, setPhotos] = useState([null, null, null, null, null, null]);
   useEffect(() => {
     let dead = false;
-    const sources = ["screens/r6.jpg?v=2", "screens/fortnite.jpg?v=2", "screens/lol.jpg?v=2", "screens/dbd.jpg?v=2"].map((file) => `${import.meta.env.BASE_URL}${file}`);
+    const sources = [
+      "screens/r6.jpg?v=3",
+      "screens/fortnite.jpg?v=3",
+      "screens/overwatch.jpg?v=3",
+      "screens/dbd.jpg?v=3",
+      "screens/cs2.jpg?v=3",
+      "screens/lol.jpg?v=3",
+    ].map((file) => `${import.meta.env.BASE_URL}${file}`);
     void Promise.all(sources.map(loadCover)).then(maps => {
       if (!dead) setPhotos(maps);
     });
@@ -385,7 +390,7 @@ function useScreens() {
       dead = true;
     };
   }, []);
-  const [r6, fortnite, lol, dbd] = photos;
+  const [r6, fortnite, overwatch, dbd, cs2, lol] = photos;
   return {
     tvs: [r6, fortnite, overwatch, dbd],
     monitors: [cs2, lol, fortnite],
@@ -917,18 +922,18 @@ function Hoop({ x, z }) {
 function RiseChair() {
   return (
     <group>
-      {[-0.22, 0.22].map((x) =>
-        [-0.18, 0.18].map((z) => (
-          <mesh key={`${x}-${z}`} position={[x, 0.06, z]} material={dark}>
-            <sphereGeometry args={[0.045, 8, 6]} />
+      {[0, 1, 2, 3, 4].map((i) => (
+        <group key={i} rotation={[0, (i * Math.PI * 2) / 5, 0]}>
+          <mesh position={[0, 0.07, 0.14]} material={metal}>
+            <boxGeometry args={[0.035, 0.03, 0.28]} />
           </mesh>
-        )),
-      )}
-      <mesh position={[0, 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]} material={metal}>
-        <cylinderGeometry args={[0.26, 0.26, 0.025, 8]} />
-      </mesh>
+          <mesh position={[0, 0.045, 0.28]} material={dark}>
+            <sphereGeometry args={[0.04, 8, 6]} />
+          </mesh>
+        </group>
+      ))}
       <mesh position={[0, 0.28, 0]} material={metal}>
-        <cylinderGeometry args={[0.035, 0.04, 0.32, 8]} />
+        <cylinderGeometry args={[0.03, 0.035, 0.36, 8]} />
       </mesh>
       <mesh position={[0, 0.48, 0.02]} material={dark}>
         <boxGeometry args={[0.46, 0.1, 0.46]} />
@@ -1146,12 +1151,18 @@ function RoomSet({ tvs, monitors }) {
           <boxGeometry args={[0.04, 0.04, 1.15]} />
         </mesh>
       </group>
-      <Pinball x={1.15} z={-4.7} color="#ff4fd8" />
-      <Pinball x={2.85} z={-4.7} color="#4d7cff" />
-      <Pinball x={4.55} z={-4.7} color="#ffd56a" />
-      <Hoop x={0.85} z={-2.15} />
-      <Hoop x={2.6} z={-2.15} />
-      <Hoop x={4.35} z={-2.15} />
+      {[
+        [1.15, -4.9, "#ff4fd8"],
+        [2.4, -4.9, "#4d7cff"],
+        [3.65, -4.9, "#ffd56a"],
+        [4.9, -4.9, "#3ddc6e"],
+        [1.15, -2.75, "#ff8a2a"],
+        [2.4, -2.75, "#c084fc"],
+        [3.65, -2.75, "#2ec4b6"],
+        [4.9, -2.75, "#ff5d73"],
+      ].map(([x, z, color]) => (
+        <Pinball key={`${x}-${z}`} x={x} z={z} color={color} />
+      ))}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.2, 0.03, 0.8]}>
         <planeGeometry args={[7.4, 4.6]} />
         <meshStandardMaterial map={galaxyMap} roughness={0.95} />
@@ -1163,51 +1174,72 @@ function RoomSet({ tvs, monitors }) {
         <Sofa mat={beige} wide={1.7} />
       </group>
       {[
-        [-3.4, 3.5, pillow2],
-        [-1.5, 4.15, pillow],
-        [0.6, 3.35, beige],
-        [1.8, 4.25, glow],
+        [-3.4, 1.2, pillow2],
+        [-0.8, 2.3, pillow],
+        [1.6, 0.4, beige],
+        [3.1, 2.1, glow],
       ].map(([x, z, mat], i) => (
         <mesh key={i} position={[x, 0.32, z]} scale={[1.15, 0.72, 1.15]} material={mat}>
           <sphereGeometry args={[0.55, 18, 12]} />
         </mesh>
       ))}
-      <group position={[4.15, 0, 6.15]}>
-        <mesh position={[0, 0.52, 0]} material={oak}>
-          <boxGeometry args={[2.6, 1.0, 0.7]} />
+      <group position={[4.2, 0, 6.4]}>
+        <mesh position={[0, 0.55, 0]} material={dark}>
+          <boxGeometry args={[3.8, 1.05, 0.78]} />
         </mesh>
-        <mesh position={[0, 1.05, 0]} material={dark}>
-          <boxGeometry args={[2.7, 0.06, 0.78]} />
+        <mesh position={[0, 1.1, 0]} material={trim}>
+          <boxGeometry args={[3.95, 0.06, 0.9]} />
         </mesh>
-        <mesh position={[-0.95, 1.22, 0]} material={glass}>
-          <cylinderGeometry args={[0.05, 0.055, 0.26, 8]} />
+        <mesh position={[0, 0.28, -0.42]} material={metal}>
+          <boxGeometry args={[3.5, 0.04, 0.04]} />
         </mesh>
-        <mesh position={[-0.65, 1.26, 0.08]} material={leaf}>
-          <cylinderGeometry args={[0.04, 0.045, 0.32, 8]} />
+        <mesh position={[0, 1.7, 0.62]} material={dark}>
+          <boxGeometry args={[3.7, 2.3, 0.08]} />
         </mesh>
-        <mesh position={[-0.35, 1.18, -0.05]} material={glow}>
-          <cylinderGeometry args={[0.045, 0.05, 0.18, 8]} />
-        </mesh>
-        <mesh position={[-0.05, 1.12, 0.06]} material={cream}>
-          <cylinderGeometry args={[0.05, 0.045, 0.1, 8]} />
-        </mesh>
-        <mesh position={[0.22, 1.12, -0.02]} material={glass}>
-          <cylinderGeometry args={[0.045, 0.04, 0.1, 8]} />
-        </mesh>
-        <mesh position={[0.55, 1.14, 0]} material={oak}>
-          <cylinderGeometry args={[0.14, 0.14, 0.06, 10]} />
-        </mesh>
-        {[-0.08, 0.02, 0.1].map((x) => (
-          <mesh key={x} position={[0.55 + x, 1.2, 0.02]} material={lamp}>
-            <sphereGeometry args={[0.035, 8, 6]} />
+        {[-1.6, -0.5, 0.5, 1.6].map((x) => (
+          <mesh key={x} position={[x, 1.75, 0.55]} material={metal}>
+            <boxGeometry args={[0.04, 2.3, 0.04]} />
           </mesh>
         ))}
-        <mesh position={[0.95, 1.16, 0.04]} material={cushion}>
-          <boxGeometry args={[0.28, 0.04, 0.2]} />
-        </mesh>
+        {[1.2, 1.65, 2.1, 2.55].map((y) => (
+          <mesh key={y} position={[0, y, 0.5]} material={oak}>
+            <boxGeometry args={[3.4, 0.045, 0.28]} />
+          </mesh>
+        ))}
+        {Array.from({ length: 24 }, (_, i) => (
+          <mesh key={i} position={[-1.5 + (i % 8) * 0.43, 1.34 + Math.floor(i / 8) * 0.45, 0.5]}>
+            <cylinderGeometry args={[0.03, 0.038, 0.2, 6]} />
+            <meshStandardMaterial color={["#c44536", "#e7d7a8", "#1c2430", "#3d6b4f", "#d7a24a", "#f4f7fb", "#7a2f2f", "#c9a227"][i % 8]} roughness={0.4} />
+          </mesh>
+        ))}
+        {[-1.2, -0.3, 0.6, 1.4].map((x) => (
+          <group key={`bulb-${x}`}>
+            <mesh position={[x, 1.85, -0.05]} material={metal}>
+              <cylinderGeometry args={[0.008, 0.008, 0.55, 4]} />
+            </mesh>
+            <mesh position={[x, 1.52, -0.05]}>
+              <sphereGeometry args={[0.07, 8, 6]} />
+              <meshBasicMaterial color="#ffd27a" />
+            </mesh>
+            <pointLight position={[x, 1.45, -0.05]} color="#ffb15a" intensity={6} distance={3.2} decay={2} />
+          </group>
+        ))}
+        {[-1.1, -0.4, 0.35, 1.05].map((x, i) => (
+          <mesh key={`glass-${x}`} position={[x, 1.16, -0.05]} material={i % 2 ? glass : cream}>
+            <cylinderGeometry args={[0.04, 0.035, 0.08, 8]} />
+          </mesh>
+        ))}
+        {[-1.3, -0.4, 0.5, 1.4].map((x) => (
+          <group key={`stool-${x}`} position={[x, 0, -0.85]}>
+            <mesh position={[0, 0.38, 0]} material={metal}>
+              <cylinderGeometry args={[0.03, 0.035, 0.7, 6]} />
+            </mesh>
+            <mesh position={[0, 0.74, 0]} material={dark}>
+              <cylinderGeometry args={[0.18, 0.18, 0.06, 10]} />
+            </mesh>
+          </group>
+        ))}
       </group>
-      <SeatChair x={3.4} z={5.35} rot={Math.PI} />
-      <SeatChair x={4.7} z={5.35} rot={Math.PI} />
       <Abajur x={-9.7} z={-7.05} />
       <Abajur x={9.7} z={-7.05} />
       <Abajur x={-9.7} z={6.7} />
@@ -1243,16 +1275,16 @@ export function World() {
       <mesh position={[11, 0.38, -0.2]} material={trim}>
         <boxGeometry args={[0.16, 0.7, 16]} />
       </mesh>
-      <mesh position={[1.4, 1.72, -7.8]} material={panel}>
+      <mesh position={[0, 1.72, -7.8]} material={panel}>
         <boxGeometry args={[10.4, 2.7, 0.08]} />
       </mesh>
       {mural && (
-        <mesh position={[1.4, 1.72, -7.74]}>
+        <mesh position={[0, 1.72, -7.74]}>
           <planeGeometry args={[10, 2.48]} />
           <meshBasicMaterial map={mural} toneMapped={false} />
         </mesh>
       )}
-      <Zone id="mural" x={1.4} z={-6.4} w={10} d={1.6} />
+      <Zone id="mural" x={0} z={-6.4} w={10} d={1.6} />
       <Zone id="consoles" x={-8.2} z={-1.6} w={3.4} d={9} />
       <Zone id="arena" x={1.4} z={-3.3} w={7} d={4.2} />
       <Zone id="lounge" x={0.2} z={5} w={8} d={3.2} />
