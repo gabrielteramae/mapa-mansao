@@ -604,6 +604,7 @@ function astar(ax: number, az: number, tx: number, tz: number) {
   const g = nearestOpen(tx, tz);
   const startI = s.r * GW + s.c;
   const goalI = g.r * GW + g.c;
+  const bias = rnd() * Math.PI * 2;
   if (startI === goalI) return [{ x: tx, z: tz }];
   const open = [startI];
   const came = new Int16Array(GW * GH).fill(-1);
@@ -636,7 +637,8 @@ function astar(ax: number, az: number, tx: number, tz: number) {
       if (solid[ni]) continue;
       if (dc !== 0 && dr !== 0 && (solid[cr * GW + nc] || solid[nr * GW + cc])) continue;
       const cost = dc !== 0 && dr !== 0 ? 1.42 : 1;
-      const ng = gScore[cur]! + cost;
+      const bend = 0.28 * (1 + Math.sin(nc * 0.85 + bias) + Math.cos(nr * 0.67 - bias));
+      const ng = gScore[cur]! + cost + bend;
       if (ng >= gScore[ni]!) continue;
       came[ni] = cur;
       gScore[ni] = ng;
@@ -793,24 +795,29 @@ function pick<T>(arr: T[], prev?: T): T {
   return arr[i]!;
 }
 
-function setPath(a: Agent, x: number, z: number) {
-  const direct = plan(a.x, a.z, x, z);
-  let path = direct;
-  if (!a.spotSit) {
-    const via = openPoint(a, 1.5, 3.4);
-    if (via) {
-      const merged = [...plan(a.x, a.z, via.x, via.z), ...plan(via.x, via.z, x, z)];
-      if (merged.length > 1) path = merged;
+function setPath(a: Agent, x: number, z: number, direct = false) {
+  let path = plan(a.x, a.z, x, z);
+  if (!direct && !a.spotSit) {
+    const via = openPoint(a, 1.6, 3.2);
+    if (
+      via &&
+      lineClear(a.x, a.z, via.x, via.z) &&
+      lineClear(via.x, via.z, x, z)
+    ) {
+      path = [
+        { x: via.x, z: via.z },
+        { x, z },
+      ];
     }
   }
   if (!path.length) return false;
   const end = path[path.length - 1]!;
-  if (!lineClear(a.x, a.z, end.x, end.z) && path.length < 2) return false;
+  if (path.length < 2 && !lineClear(a.x, a.z, end.x, end.z)) return false;
   a.path = path;
   a.state = "walk";
   a.sitting = false;
   a.partner = null;
-  a.seen = [...a.seen, keyOf(x, z)].slice(-8);
+  a.seen = [...(a.seen ?? []), keyOf(x, z)].slice(-8);
   return true;
 }
 
@@ -819,22 +826,18 @@ function keyOf(x: number, z: number) {
 }
 
 function openPoint(a: Agent, minDist: number, maxDist: number) {
-  let best: { x: number; z: number } | null = null;
-  let bestScore = -1;
+  const found: { x: number; z: number }[] = [];
   for (let n = 0; n < 28; n++) {
     const x = -6.4 + rnd() * 12.6;
     const z = -4.2 + rnd() * 7.4;
     if (hit(x, z)) continue;
     const dist = Math.hypot(x - a.x, z - a.z);
     if (dist < minDist || dist > maxDist) continue;
-    if (a.seen.includes(keyOf(x, z))) continue;
-    const score = dist + rnd() * 1.4;
-    if (score > bestScore) {
-      best = { x, z };
-      bestScore = score;
-    }
+    if ((a.seen ?? []).includes(keyOf(x, z))) continue;
+    found.push({ x, z });
   }
-  return best;
+  if (!found.length) return null;
+  return found[Math.floor(rnd() * found.length)]!;
 }
 
 function goToSpot(a: Agent, spot: Spot) {
@@ -869,16 +872,19 @@ function wander(a: Agent) {
 }
 
 function escape(a: Agent) {
+  const end = a.path[a.path.length - 1];
+  a.path = [];
+  a.spotSit = false;
+  a.seek = null;
+  if (end && Math.hypot(end.x - a.x, end.z - a.z) > 0.8 && setPath(a, end.x, end.z, true)) return;
   const base = rnd() * Math.PI * 2;
   for (let i = 0; i < 8; i++) {
     const ang = base + i * 0.8;
     const x = Math.min(6.3, Math.max(-6.3, a.x + Math.sin(ang) * 2.1));
     const z = Math.min(3.5, Math.max(-4.1, a.z + Math.cos(ang) * 2.1));
-    if (hit(x, z)) continue;
-    a.spotSit = false;
-    a.seek = null;
-    a.seen = [...a.seen, keyOf(a.x, a.z)].slice(-8);
-    if (setPath(a, x, z)) return;
+    if (hit(x, z) || !lineClear(a.x, a.z, x, z)) continue;
+    a.seen = [...(a.seen ?? []), keyOf(a.x, a.z)].slice(-8);
+    if (setPath(a, x, z, true)) return;
   }
   wander(a);
 }
@@ -1109,6 +1115,16 @@ function tick(dt: number) {
   const timeDt = Math.min(dt, 0.05);
 
   for (const a of list) {
+    if (a.partner) {
+      const mate = list.find((o) => o.id === a.partner);
+      if (!mate || mate.partner !== a.id) {
+        a.partner = null;
+        if (a.state === "chat") {
+          a.state = "use";
+          a.dwell = 0.4;
+        }
+      }
+    }
     a.phase += timeDt;
     if (a.state === "chat" && a.partner) {
       const b = list.find((o) => o.id === a.partner);
@@ -1251,16 +1267,28 @@ function tick(dt: number) {
         const nz = dz / d;
         const gap = min - d;
         if (a.sitting) {
-          b.x += nx * gap;
-          b.z += nz * gap;
+          if (!blockedAt(b.x + nx * gap, b.z + nz * gap, radiusOf(b.width))) {
+            b.x += nx * gap;
+            b.z += nz * gap;
+          }
         } else if (b.sitting) {
-          a.x -= nx * gap;
-          a.z -= nz * gap;
+          if (!blockedAt(a.x - nx * gap, a.z - nz * gap, radiusOf(a.width))) {
+            a.x -= nx * gap;
+            a.z -= nz * gap;
+          }
         } else {
-          a.x -= nx * gap * 0.5;
-          a.z -= nz * gap * 0.5;
-          b.x += nx * gap * 0.5;
-          b.z += nz * gap * 0.5;
+          const ax = a.x - nx * gap * 0.5;
+          const az = a.z - nz * gap * 0.5;
+          const bx = b.x + nx * gap * 0.5;
+          const bz = b.z + nz * gap * 0.5;
+          if (!blockedAt(ax, az, radiusOf(a.width))) {
+            a.x = ax;
+            a.z = az;
+          }
+          if (!blockedAt(bx, bz, radiusOf(b.width))) {
+            b.x = bx;
+            b.z = bz;
+          }
         }
       }
     }
