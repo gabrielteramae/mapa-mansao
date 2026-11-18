@@ -329,6 +329,7 @@ export type Agent = {
   lineAge: number;
   lineEvery: number;
   stuck: number;
+  seen: string[];
 };
 
 type Solid = {
@@ -793,10 +794,47 @@ function pick<T>(arr: T[], prev?: T): T {
 }
 
 function setPath(a: Agent, x: number, z: number) {
-  a.path = plan(a.x, a.z, x, z);
+  const direct = plan(a.x, a.z, x, z);
+  let path = direct;
+  if (!a.spotSit) {
+    const via = openPoint(a, 1.5, 3.4);
+    if (via) {
+      const merged = [...plan(a.x, a.z, via.x, via.z), ...plan(via.x, via.z, x, z)];
+      if (merged.length > 1) path = merged;
+    }
+  }
+  if (!path.length) return false;
+  const end = path[path.length - 1]!;
+  if (!lineClear(a.x, a.z, end.x, end.z) && path.length < 2) return false;
+  a.path = path;
   a.state = "walk";
   a.sitting = false;
   a.partner = null;
+  a.seen = [...a.seen, keyOf(x, z)].slice(-8);
+  return true;
+}
+
+function keyOf(x: number, z: number) {
+  return `${Math.round(x * 2)},${Math.round(z * 2)}`;
+}
+
+function openPoint(a: Agent, minDist: number, maxDist: number) {
+  let best: { x: number; z: number } | null = null;
+  let bestScore = -1;
+  for (let n = 0; n < 28; n++) {
+    const x = -6.4 + rnd() * 12.6;
+    const z = -4.2 + rnd() * 7.4;
+    if (hit(x, z)) continue;
+    const dist = Math.hypot(x - a.x, z - a.z);
+    if (dist < minDist || dist > maxDist) continue;
+    if (a.seen.includes(keyOf(x, z))) continue;
+    const score = dist + rnd() * 1.4;
+    if (score > bestScore) {
+      best = { x, z };
+      bestScore = score;
+    }
+  }
+  return best;
 }
 
 function goToSpot(a: Agent, spot: Spot) {
@@ -805,8 +843,44 @@ function goToSpot(a: Agent, spot: Spot) {
   a.spotSit = Boolean(spot.sit);
   a.room = spot.room;
   a.seek = null;
-  const wiggle = spot.sit ? 0.03 : 0.1;
-  setPath(a, spot.x + (rnd() - 0.5) * wiggle, spot.z + (rnd() - 0.5) * wiggle);
+  const wiggle = spot.sit ? 0 : 0.16;
+  return setPath(a, spot.x + (rnd() - 0.5) * wiggle, spot.z + (rnd() - 0.5) * wiggle);
+}
+
+function freshSpot(a: Agent, agents: Agent[]) {
+  const options = spots.filter(
+    (s) =>
+      s.id !== a.spotId &&
+      !a.seen.includes(s.id) &&
+      !agents.some((o) => o.id !== a.id && o.spotId === s.id && (o.sitting || o.state === "use")),
+  );
+  if (!options.length) return randomSpot(a);
+  return options[Math.floor(rnd() * options.length)]!;
+}
+
+function wander(a: Agent) {
+  const point = openPoint(a, 2.6, 6.4);
+  if (!point) return false;
+  a.spotId = "roam";
+  a.spotSit = false;
+  a.spotFace = Math.atan2(point.x - a.x, point.z - a.z);
+  a.seek = null;
+  return setPath(a, point.x, point.z);
+}
+
+function escape(a: Agent) {
+  const base = rnd() * Math.PI * 2;
+  for (let i = 0; i < 8; i++) {
+    const ang = base + i * 0.8;
+    const x = Math.min(6.3, Math.max(-6.3, a.x + Math.sin(ang) * 2.1));
+    const z = Math.min(3.5, Math.max(-4.1, a.z + Math.cos(ang) * 2.1));
+    if (hit(x, z)) continue;
+    a.spotSit = false;
+    a.seek = null;
+    a.seen = [...a.seen, keyOf(a.x, a.z)].slice(-8);
+    if (setPath(a, x, z)) return;
+  }
+  wander(a);
 }
 
 function randomSpot(a: Agent) {
@@ -852,8 +926,8 @@ function chatCount(agents: Agent[]) {
 }
 
 function decide(a: Agent, agents: Agent[]) {
-  const canChat = chatCount(agents) < 2;
-  if (canChat && rnd() < 0.62) {
+  const roll = rnd();
+  if (roll < 0.16 && chatCount(agents) < 2) {
     const pool = agents.filter(
       (o) =>
         o.id !== a.id &&
@@ -863,28 +937,28 @@ function decide(a: Agent, agents: Agent[]) {
         !agents.some((s) => s.seek === o.id),
     );
     if (pool.length) {
-      pool.sort((p, q) => Math.hypot(p.x - a.x, p.z - a.z) - Math.hypot(q.x - a.x, q.z - a.z));
-      const other = rnd() < 0.7 ? pool[0]! : pick(pool);
+      const other = pick(pool);
       const ang = rnd() * Math.PI * 2;
-      let x = other.x + Math.sin(ang) * 1.15;
-      let z = other.z + Math.cos(ang) * 1.15;
-      if (z < -1.25 && z > -3.4 && x < 2.2) z = -1.2;
+      let x = other.x + Math.sin(ang) * (1.25 + rnd() * 0.45);
+      let z = other.z + Math.cos(ang) * (1.25 + rnd() * 0.45);
       x = Math.min(6.2, Math.max(-6.3, x));
       z = Math.min(3.45, Math.max(-3.95, z));
-      a.seek = other.id;
-      a.room = other.room;
-      setPath(a, x, z);
-      return;
+      if (!hit(x, z)) {
+        a.seek = other.id;
+        a.room = other.room;
+        a.spotSit = false;
+        if (setPath(a, x, z)) return;
+        a.seek = null;
+      }
     }
   }
-  goToSpot(a, rnd() < 0.75 ? openSeat(a, agents) : randomSpot(a));
-}
-
-function openSeat(a: Agent, agents: Agent[]) {
-  const seats = spots.filter((s) => s.sit && s.id !== a.spotId);
-  const free = seats.filter((s) => !agents.some((o) => o.id !== a.id && o.spotId === s.id));
-  if (!free.length) return randomSpot(a);
-  return free[Math.floor(rnd() * free.length)]!;
+  if (roll < 0.42) {
+    const spot = freshSpot(a, agents);
+    a.seen = [...a.seen, spot.id].slice(-8);
+    if (goToSpot(a, spot)) return;
+  }
+  if (wander(a)) return;
+  goToSpot(a, randomSpot(a));
 }
 
 function plant(a: Agent) {
@@ -988,6 +1062,7 @@ function createAgents(): Agent[] {
       lineAge: 0,
       lineEvery: 3.5,
       stuck: 0,
+      seen: [],
     };
     return agent;
   });
@@ -1008,6 +1083,7 @@ export function getAgents() {
       a.height = profile.height;
       a.top = profile.top;
       a.glasses = profile.glasses;
+      a.seen ??= [];
     }
   }
   return agents;
@@ -1098,32 +1174,39 @@ function tick(dt: number) {
         }
         if (crowded(a.x + stepX, a.z + stepZ, a, list)) {
           a.stuck = (a.stuck ?? 0) + 1;
-          if (a.stuck > 5) {
+          if (a.stuck > 22) {
             a.stuck = 0;
             a.path = [];
-            goToSpot(a, randomSpot(a));
+            escape(a);
           }
         } else {
           const beforeX = a.x;
           const beforeZ = a.z;
           slide(a, stepX, stepZ);
-          a.yaw = lerpAngle(a.yaw, Math.atan2(dx, dz), Math.min(1, moveDt * 5));
-          if (Math.hypot(a.x - beforeX, a.z - beforeZ) < 0.004) {
+          const movedX = a.x - beforeX;
+          const movedZ = a.z - beforeZ;
+          if (Math.hypot(movedX, movedZ) < 0.004) {
             a.stuck = (a.stuck ?? 0) + 1;
-            if (a.stuck > 6) {
+            if (a.stuck > 22) {
               a.stuck = 0;
               a.path = [];
-              goToSpot(a, randomSpot(a));
+              escape(a);
             }
           } else {
             a.stuck = 0;
+            a.yaw = lerpAngle(a.yaw, Math.atan2(movedX, movedZ), Math.min(1, moveDt * 8));
           }
         }
       }
       continue;
     }
 
-    if (a.sitting) plant(a);
+    if (a.sitting) {
+      a.yaw = lerpAngle(a.yaw, a.spotFace, Math.min(1, timeDt * 4));
+      a.dwell -= timeDt;
+      if (a.dwell <= 0) decide(a, list);
+      continue;
+    }
     a.yaw = lerpAngle(
       a.yaw,
       a.sitting ? a.spotFace : a.state === "use" ? a.face + Math.sin(a.phase * 0.4) * 0.16 : a.face,
@@ -1142,7 +1225,9 @@ function tick(dt: number) {
 
   if (moveDt === 0) return;
 
-  for (const a of list) shoveOut(a);
+  for (const a of list) {
+    if (!a.sitting) shoveOut(a);
+  }
 
   for (let pass = 0; pass < 3; pass++) {
     for (let i = 0; i < list.length; i++) {
