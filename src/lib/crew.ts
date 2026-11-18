@@ -1,4 +1,4 @@
-import { PCS, PC_Z, spots, type Spot, type ZoneId } from "@/lib/layout";
+import { spots, type Spot, type ZoneId } from "@/lib/layout";
 
 export type Hair =
   "crop" | "side" | "straight" | "quiff" | "wavy" | "curly" | "fade" | "fringe" | "spikes" | "part";
@@ -363,43 +363,6 @@ const SOLIDS: Solid[] = [
   makeSolid(-11, 0.38, -0.2, 0.16, 0.7, 16),
   makeSolid(11, 0.38, -0.2, 0.16, 0.7, 16),
   makeSolid(0, 1, 7.75, 22, 2, 0.08),
-  makeSolid(-6.7, 1.7, -4.2, 0.28, 2.5, 1.5),
-  makeSolid(6.55, 1.7, -4.15, 0.28, 2.5, 1.5),
-  ...PCS.flatMap((x) => [
-    makeSolid(x, 0.74, PC_Z, 1.42, 0.07, 0.72),
-    makeSolid(x, 0.36, PC_Z, 1.2, 0.7, 0.58),
-    makeSolid(x + 0.92, 0.38, PC_Z + 0.08, 0.24, 0.76, 0.46),
-    makeSolid(x, 1.12, PC_Z - 0.28, 1.05, 0.62, 0.05),
-    makeSolid(x, 0.8, PC_Z - 0.28, 0.08, 0.28, 0.08),
-  ]),
-  makeSolid(0, 1.45, 0.15, 2.7, 1.5, 0.08),
-  makeSolid(0, 0.55, 0.15, 0.12, 1.05, 0.12),
-  makeSolid(3.7, 1.35, 1.7, 2.15, 1.2, 0.08),
-  makeSolid(3.7, 0.4, 2.32, 2.1, 0.75, 0.52),
-  makeSolid(4.75, 0.18, 2.4, 0.55, 0.3, 0.4),
-  makeSolid(4.85, 0.85, -1.15, 0.7, 1.6, 0.7),
-  makeSolid(-5.05, 0.95, 1.05, 0.85, 1.7, 0.7),
-  makeSolid(-4.7, 0.4, 2.45, 0.56, 0.8, 0.56, true),
-  makeSolid(3.15, 0.36, 4.05, 0.48, 0.72, 0.48, true),
-  makeSolid(-6.35, 0.75, -4.15, 0.36, 1.5, 1.15),
-  makeSolid(4.6, 0.8, -4.45, 2.2, 1.6, 0.32),
-  makeSolid(1.15, 0.22, 2.65, 0.76, 0.44, 0.76, true),
-  makeSolid(-0.35, 0.2, 3.25, 0.68, 0.4, 0.68, true),
-  makeSolid(-2.35, 0.4, 0.15, 0.42, 0.8, 0.42),
-  makeSolid(2.45, 0.4, -0.55, 0.42, 0.8, 0.42),
-  makeSolid(2.35, 0.5, 3.7, 1.6, 1.0, 0.46),
-  makeSolid(5.15, 0.4, -2.35, 0.55, 0.8, 0.7),
-  makeSolid(-1.7, 0.45, -0.35, 0.26, 0.9, 0.26),
-  makeSolid(1.7, 0.45, -0.35, 0.26, 0.9, 0.26),
-  makeSolid(5.55, 0.42, 0.45, 1.7, 0.84, 1.05),
-  makeSolid(-6.35, 0.85, 3.35, 0.7, 1.7, 0.75),
-  makeSolid(-6.7, 0.55, -1.3, 0.4, 1.1, 0.4),
-  makeSolid(-6.7, 0.55, -0.15, 0.4, 1.1, 0.4),
-  ...PCS.map((x) => makeSolid(x, 0.72, PC_Z + 1.16, 0.42, 0.42, 0.1)),
-  makeSolid(-0.7, 0.72, 1.53, 0.42, 0.42, 0.1),
-  makeSolid(0.7, 0.72, 1.53, 0.42, 0.42, 0.1),
-  makeSolid(3.15, 0.72, 3.23, 0.42, 0.42, 0.1),
-  makeSolid(4.25, 0.72, 3.23, 0.42, 0.42, 0.1),
 ];
 
 const WX0 = -10.7;
@@ -1023,9 +986,10 @@ function shuffle<T>(list: T[]) {
 }
 
 function createAgents(): Agent[] {
-  const pool = shuffle(spots);
   return crew.map((c, i) => {
-    const s = pool[i % pool.length]!;
+    const x = -7.65 + i * 1.7;
+    const z = 0.6;
+    const yaw = Math.PI;
     const agent: Agent = {
       id: c.id,
       name: c.name,
@@ -1045,17 +1009,17 @@ function createAgents(): Agent[] {
       beard: c.beard,
       glasses: c.glasses,
       lines: c.lines,
-      x: s.x,
-      z: s.z,
-      yaw: s.yaw,
-      face: s.yaw,
+      x,
+      z,
+      yaw,
+      face: yaw,
       path: [],
       state: "use",
-      room: s.room,
-      spotId: s.id,
-      spotFace: s.yaw,
-      spotSit: Boolean(s.sit),
-      sitting: Boolean(s.sit),
+      room: "lounge",
+      spotId: "still",
+      spotFace: yaw,
+      spotSit: false,
+      sitting: false,
       partner: null,
       seek: null,
       dwell: 1.6 + rnd() * 5,
@@ -1092,14 +1056,8 @@ export function getAgents() {
   return agents;
 }
 
-export function step(dt: number) {
-  physicsAcc += Math.min(Math.max(dt, 0), 0.1);
-  let guard = 0;
-  while (physicsAcc >= PHYSICS_STEP && guard < 3) {
-    tick(PHYSICS_STEP);
-    physicsAcc -= PHYSICS_STEP;
-    guard += 1;
-  }
+export function step(_dt: number) {
+  return;
 }
 
 const PHYSICS_STEP = 1 / 60;

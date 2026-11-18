@@ -568,16 +568,40 @@ function Extras() {
   return <group><group position={[-6.35, 0, -4.15]}><mesh position={[0, .75, 0]} material={crtMat}><boxGeometry args={[.36, 1.5, 1.15]} /></mesh>{cases.map((color, i) =><mesh key={`shelf-${i}`} position={[.16, .28 + i % 4 * .32, -.4 + Math.floor(i / 4) * .7]}><boxGeometry args={[.08, .22, .28]} /><meshStandardMaterial color={color} roughness={.5} /></mesh>)}</group><group position={[4.6, 0, -4.45]}><mesh position={[0, .8, 0]} material={crtMat}><boxGeometry args={[2.2, 1.6, .32]} /></mesh>{cases.map((color, i) =><mesh key={`poster-${i}`} position={[-.8 + i % 4 * .52, .35 + Math.floor(i / 4) * .7, .14]}><boxGeometry args={[.4, .48, .08]} /><meshStandardMaterial color={color} roughness={.5} /></mesh>)}</group><mesh position={[1.15, .22, 2.65]} material={pillow}><sphereGeometry args={[.38, 16, 12]} /></mesh><mesh position={[-.35, .2, 3.25]} material={pillow2}><sphereGeometry args={[.34, 16, 12]} /></mesh><group position={[-2.35, 0, .15]}><mesh position={[0, .24, 0]} material={trim}><boxGeometry args={[.42, .08, .42]} /></mesh><mesh position={[0, .55, -.16]} material={pillow}><boxGeometry args={[.42, .46, .08]} /></mesh></group><group position={[2.45, 0, -.55]}><mesh position={[0, .24, 0]} material={trim}><boxGeometry args={[.42, .08, .42]} /></mesh><mesh position={[0, .55, -.16]} material={glow}><boxGeometry args={[.42, .46, .08]} /></mesh></group><group position={[2.35, 0, 3.7]}><mesh position={[0, .28, 0]} material={crtMat}><boxGeometry args={[1.6, .5, .46]} /></mesh>{["#7c5cff", "#e8b15a", "#c4a2ff"].map((color, i) =><group key={color} position={[-.48 + i * .48, .68, 0]}><mesh material={crtMat}><boxGeometry args={[.38, .32, .28]} /></mesh><mesh position={[0, 0, .15]}><planeGeometry args={[.28, .18]} /><meshBasicMaterial color={color} toneMapped={false} /></mesh></group>)} <mesh position={[0, .08, .28]} material={neon}><boxGeometry args={[1.45, .04, .04]} /></mesh></group><group position={[5.15, 0, -2.35]}><mesh position={[0, .28, 0]} material={dark}><boxGeometry args={[.55, .5, .55]} /></mesh><mesh position={[0, .62, -.18]} material={pillow}><boxGeometry args={[.5, .4, .1]} /></mesh><mesh position={[0, .58, .32]} rotation={[.5, 0, 0]} material={crtMat}><torusGeometry args={[.18, .035, 8, 16]} /></mesh></group>{[-1.7, 1.7].map(x =><group key={x} position={[x, 0, -.35]}><mesh position={[0, .45, 0]} material={crtMat}><boxGeometry args={[.26, .9, .26]} /></mesh><mesh position={[0, .7, .14]} material={neon}><boxGeometry args={[.16, .1, .02]} /></mesh></group>)}</group>;
 }
 export function World() {
-  const screens = useScreens();
   const mural = useMuralTexture();
-  return <group><group name="city" position={[0, -12, 0]} visible={false}><mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.48, -1]} material={ground}><planeGeometry args={[180, 140]} /></mesh><Skyline /><District /></group><TimeSurface /><RgbPulse /><mesh position={[0, -1.5, -.2]} material={trim}><boxGeometry args={[23.2, 3, 17.2]} /></mesh><mesh position={[0, .012, -.2]} material={wood}><boxGeometry args={[22, .04, 16]} /></mesh><mesh position={[0, .08, 7.65]} material={lamp}><boxGeometry args={[21.6, .05, .08]} /></mesh><mesh position={[0, 1.55, -8.02]} material={trim}><boxGeometry args={[22, 3.15, .18]} /></mesh><mesh position={[-11, .38, -.2]} material={trim}><boxGeometry args={[.16, .7, 16]} /></mesh><mesh position={[11, .38, -.2]} material={trim}><boxGeometry args={[.16, .7, 16]} /></mesh><mesh position={[.15, 1.72, -7.8]} material={panel}><boxGeometry args={[8.9, 2.7, .08]} /></mesh>{mural && <mesh position={[.15, 1.72, -7.74]}><planeGeometry args={[8.55, 2.48]} /><meshBasicMaterial map={mural} toneMapped={false} /></mesh>} <Zone id="mural" x={.1} z={-6.45} w={8.2} d={1.7} /><Zone id="setup" x={-2.2} z={-2.15} w={8.6} d={2.5} /><Zone id="arena" x={0} z={.7} w={4.6} d={2.7} /><Zone id="consoles" x={3.6} z={2.55} w={4.4} d={2.8} /><Zone id="lounge" x={-2.4} z={2.7} w={5.2} d={2.8} />{PCS.map((x, i) =><Desk key={x} x={x} map={screens.pcs[i] ?? null} phase={i * .22} />)} <pointLight position={[-2.4, .7, -1.8]} color="#ffb15a" intensity={2.2} distance={7} decay={2} /><group position={[0, 0, .15]} onClick={e => {
-      e.stopPropagation();
-      useHouse.getState().setRoom("arena");
-    }}><mesh position={[0, 1.45, 0]} material={trim}><boxGeometry args={[2.7, 1.5, .08]} /></mesh>{screens.arena && <mesh position={[0, 1.45, .05]}><planeGeometry args={[2.5, 1.28]} /><meshBasicMaterial map={screens.arena} toneMapped={false} polygonOffset={true} polygonOffsetFactor={-1} /></mesh>} <mesh position={[0, .55, 0]} material={trim}><boxGeometry args={[.12, 1.05, .12]} /></mesh><Seat x={-.7} z={1} /><Seat x={.7} z={1} /></group><group position={[3.7, 0, 1.7]} onClick={e => {
-      e.stopPropagation();
-      useHouse.getState().setRoom("consoles");
-    }}><mesh position={[0, 1.35, 0]} material={trim}><boxGeometry args={[2.15, 1.2, .08]} /></mesh>{screens.tv && <mesh position={[0, 1.35, .05]}><planeGeometry args={[1.98, 1.02]} /><meshBasicMaterial map={screens.tv} toneMapped={false} polygonOffset={true} polygonOffsetFactor={-1} /></mesh>} <mesh position={[-1.02, .7, 0]} material={trim}><boxGeometry args={[.06, .14, .06]} /></mesh><mesh position={[1.02, .7, 0]} material={trim}><boxGeometry args={[.06, .14, .06]} /></mesh><group position={[0, 0, .62]}><mesh position={[0, .32, 0]} material={wood}><boxGeometry args={[2.05, .5, .48]} /></mesh><mesh position={[0, .6, 0]} material={trim}><boxGeometry args={[2.12, .05, .52]} /></mesh><mesh position={[-.62, .86, 0]} material={cream}><boxGeometry args={[.1, .38, .24]} /></mesh><mesh position={[-.62, .86, .02]} material={dark}><boxGeometry args={[.035, .3, .1]} /></mesh><mesh position={[-.28, .7, .04]} material={dark}><boxGeometry args={[.32, .08, .22]} /></mesh><mesh position={[-.28, .75, .06]} material={leaf}><boxGeometry args={[.18, .02, .08]} /></mesh><mesh position={[.22, .66, .06]} material={cream}><boxGeometry args={[.18, .035, .11]} /></mesh><mesh position={[.5, .66, .06]} material={dark}><boxGeometry args={[.18, .035, .11]} /></mesh><mesh position={[.5, .68, .08]} material={leaf}><boxGeometry args={[.06, .012, .04]} /></mesh></group><Seat x={-.55} z={1.15} /><Seat x={.55} z={1.15} /></group><group position={[4.85, 0, -1.15]} onClick={e => {
-      e.stopPropagation();
-      useHouse.getState().setRoom("lounge");
-    }}><mesh position={[0, .85, 0]} material={cream}><boxGeometry args={[.7, 1.6, .7]} /></mesh><mesh position={[.36, .9, 0]} material={trim}><boxGeometry args={[.03, 1.2, .55]} /></mesh><mesh position={[0, 1.35, .36]} material={glow}><boxGeometry args={[.28, .16, .02]} /></mesh></group><group position={[-4.7, 0, 2.45]}><mesh position={[0, .16, 0]} material={trim}><cylinderGeometry args={[.16, .18, .28, 10]} /></mesh><mesh position={[0, .48, 0]} material={leaf}><sphereGeometry args={[.28, 14, 12]} /></mesh></group><group position={[3.15, 0, 4.05]}><mesh position={[0, .14, 0]} material={trim}><cylinderGeometry args={[.14, .16, .24, 10]} /></mesh><mesh position={[0, .42, 0]} material={leaf}><sphereGeometry args={[.24, 14, 12]} /></mesh></group><mesh rotation={[-Math.PI / 2, 0, 0]} position={[-.4, .045, 2.15]} material={rugMat}><planeGeometry args={[5.4, 2.8]} /></mesh><mesh position={[-6.7, 1.7, -4.2]} material={curtain}><boxGeometry args={[.28, 2.5, 1.5]} /></mesh><mesh position={[6.55, 1.7, -4.15]} material={curtain}><boxGeometry args={[.28, 2.5, 1.5]} /></mesh><group position={[-5.05, 0, 1.05]}><mesh position={[0, .95, 0]} material={arcadeMat}><boxGeometry args={[.85, 1.7, .7]} /></mesh><mesh position={[0, 1.55, .28]} material={glow}><boxGeometry args={[.7, .22, .06]} /></mesh><mesh position={[0, 1.15, .32]} material={crtMat}><boxGeometry args={[.62, .48, .08]} /></mesh><mesh position={[0, 1.15, .37]}><planeGeometry args={[.5, .36]} /><meshBasicMaterial color="#5dffe0" toneMapped={false} /></mesh><mesh position={[0, .55, .36]} material={pillow}><boxGeometry args={[.46, .08, .12]} /></mesh></group><mesh position={[-5.7, 2.35, -5.58]}><planeGeometry args={[.85, 1.05]} /><meshBasicMaterial color="#ff5d8f" toneMapped={false} /></mesh><mesh position={[4.6, 2.45, -5.58]}><planeGeometry args={[.95, .7]} /><meshBasicMaterial color="#2ec4b6" toneMapped={false} /></mesh><mesh position={[5.7, 2.15, -5.58]}><planeGeometry args={[.55, .7]} /><meshBasicMaterial color="#ffd166" toneMapped={false} /></mesh><Extras /><Gear /><Sconces /><RoomLights /><BannerPlane /></group>;
+  return (
+    <group>
+      <mesh position={[0, -1.5, -0.2]} material={trim}>
+        <boxGeometry args={[23.2, 3, 17.2]} />
+      </mesh>
+      <mesh position={[0, 0.012, -0.2]} material={wood}>
+        <boxGeometry args={[22, 0.04, 16]} />
+      </mesh>
+      <mesh position={[0, 1.55, -8.02]} material={trim}>
+        <boxGeometry args={[22, 3.15, 0.18]} />
+      </mesh>
+      <mesh position={[-11, 0.38, -0.2]} material={trim}>
+        <boxGeometry args={[0.16, 0.7, 16]} />
+      </mesh>
+      <mesh position={[11, 0.38, -0.2]} material={trim}>
+        <boxGeometry args={[0.16, 0.7, 16]} />
+      </mesh>
+      <mesh position={[0.15, 1.72, -7.8]} material={panel}>
+        <boxGeometry args={[8.9, 2.7, 0.08]} />
+      </mesh>
+      {mural && (
+        <mesh position={[0.15, 1.72, -7.74]}>
+          <planeGeometry args={[8.55, 2.48]} />
+          <meshBasicMaterial map={mural} toneMapped={false} />
+        </mesh>
+      )}
+      <Zone id="mural" x={0.1} z={-6.45} w={8.2} d={1.7} />
+      <Zone id="setup" x={-2.2} z={-2.15} w={8.6} d={2.5} />
+      <Zone id="arena" x={0} z={0.7} w={4.6} d={2.7} />
+      <Zone id="consoles" x={3.6} z={2.55} w={4.4} d={2.8} />
+      <Zone id="lounge" x={-2.4} z={2.7} w={5.2} d={2.8} />
+      <pointLight position={[0, 3.4, -1]} color="#ffe0b0" intensity={22} distance={30} decay={2} />
+      <BannerPlane />
+    </group>
+  );
 }
