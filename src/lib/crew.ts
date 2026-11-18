@@ -56,7 +56,7 @@ export const crew: Profile[] = [
     id: "saad",
     name: "Saad",
     color: "#e23d3d",
-    width: 1,
+    width: 0.82,
     height: 1.02,
     speed: 1.55,
     hair: "side",
@@ -134,8 +134,8 @@ export const crew: Profile[] = [
     id: "gordao",
     name: "Gordão",
     color: "#f2c14e",
-    width: 1.4,
-    height: 1.12,
+    width: 1.78,
+    height: 1.34,
     speed: 1.2,
     hair: "curly",
     hairColor: "#1a120e",
@@ -359,10 +359,10 @@ function makeSolid(
 }
 
 const SOLIDS: Solid[] = [
-  makeSolid(0, 1.55, -5.72, 15.8, 3.15, 0.18),
-  makeSolid(-7.85, 0.38, -0.2, 0.16, 0.7, 11.2),
-  makeSolid(7.85, 0.38, -0.2, 0.16, 0.7, 11.2),
-  makeSolid(0, 1, 5.52, 15.6, 2, 0.08),
+  makeSolid(0, 1.55, -8.02, 22, 3.15, 0.18),
+  makeSolid(-11, 0.38, -0.2, 0.16, 0.7, 16),
+  makeSolid(11, 0.38, -0.2, 0.16, 0.7, 16),
+  makeSolid(0, 1, 7.75, 22, 2, 0.08),
   makeSolid(-6.7, 1.7, -4.2, 0.28, 2.5, 1.5),
   makeSolid(6.55, 1.7, -4.15, 0.28, 2.5, 1.5),
   ...PCS.flatMap((x) => [
@@ -403,10 +403,10 @@ const SOLIDS: Solid[] = [
   makeSolid(4.25, 0.72, 3.23, 0.42, 0.42, 0.1),
 ];
 
-const WX0 = -7.55;
-const WX1 = 7.55;
-const WZ0 = -5.45;
-const WZ1 = 5.25;
+const WX0 = -10.7;
+const WX1 = 10.7;
+const WZ0 = -7.7;
+const WZ1 = 7.3;
 const CELL = 0.36;
 const GW = Math.round((WX1 - WX0) / CELL);
 const GH = Math.round((WZ1 - WZ0) / CELL);
@@ -416,7 +416,7 @@ function radiusOf(width: number) {
 }
 
 function bodySpace(width: number) {
-  return 0.48 * width;
+  return 0.4 * width;
 }
 
 function crowded(x: number, z: number, self: Agent, others: Agent[]) {
@@ -826,8 +826,8 @@ function keyOf(x: number, z: number) {
 function openPoint(a: Agent, minDist: number, maxDist: number) {
   const found: { x: number; z: number }[] = [];
   for (let n = 0; n < 28; n++) {
-    const x = -6.4 + rnd() * 12.6;
-    const z = -4.2 + rnd() * 7.4;
+    const x = -9.6 + rnd() * 19.2;
+    const z = -6.6 + rnd() * 13.2;
     if (hit(x, z)) continue;
     const dist = Math.hypot(x - a.x, z - a.z);
     if (dist < minDist || dist > maxDist) continue;
@@ -878,8 +878,8 @@ function escape(a: Agent) {
   const base = rnd() * Math.PI * 2;
   for (let i = 0; i < 8; i++) {
     const ang = base + i * 0.8;
-    const x = Math.min(6.3, Math.max(-6.3, a.x + Math.sin(ang) * 2.1));
-    const z = Math.min(3.5, Math.max(-4.1, a.z + Math.cos(ang) * 2.1));
+    const x = Math.min(9.4, Math.max(-9.4, a.x + Math.sin(ang) * 2.1));
+    const z = Math.min(6.6, Math.max(-6.8, a.z + Math.cos(ang) * 2.1));
     if (hit(x, z) || !lineClear(a.x, a.z, x, z)) continue;
     a.seen = [...(a.seen ?? []), keyOf(a.x, a.z)].slice(-8);
     if (setPath(a, x, z, true)) return;
@@ -945,8 +945,8 @@ function decide(a: Agent, agents: Agent[]) {
       const ang = rnd() * Math.PI * 2;
       let x = other.x + Math.sin(ang) * (1.25 + rnd() * 0.45);
       let z = other.z + Math.cos(ang) * (1.25 + rnd() * 0.45);
-      x = Math.min(6.2, Math.max(-6.3, x));
-      z = Math.min(3.45, Math.max(-3.95, z));
+      x = Math.min(9.4, Math.max(-9.4, x));
+      z = Math.min(6.6, Math.max(-6.8, z));
       if (!hit(x, z)) {
         a.seek = other.id;
         a.room = other.room;

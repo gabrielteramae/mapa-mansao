@@ -16,7 +16,6 @@ const white = new THREE.MeshBasicMaterial({ color: "#fffaf6" });
 const mouth = new THREE.MeshBasicMaterial({ color: "#c4786a" });
 const glass = new THREE.MeshStandardMaterial({ color: "#1a1a1a", roughness: 0.35 });
 const zip = new THREE.MeshStandardMaterial({ color: "#4a4a4a", roughness: 0.4 });
-const band = new THREE.MeshBasicMaterial({ color: "#2f6bff" });
 const ringMat = new THREE.MeshBasicMaterial({ color: "#8eb7e8", toneMapped: false });
 const earring = new THREE.MeshStandardMaterial({
   color: "#d9d9d9",
@@ -421,7 +420,7 @@ function Person({ index }: { index: number }) {
               <boxGeometry args={[0.2, 0.14, 0.04]} />
             </mesh>
           )}
-          {agent.top === "jacket" && (
+          {agent.top === "jacket" && agent.id !== "nishio" && (
             <mesh position={[0, 0.02, 0.15]} material={zip}>
               <boxGeometry args={[0.03, 0.42, 0.02]} />
             </mesh>
@@ -434,11 +433,6 @@ function Person({ index }: { index: number }) {
                 <sphereGeometry args={[0.055, 16, 12]} />
               </mesh>
             </group>
-            {agent.id === "nakazone" && (
-              <mesh position={[0, -0.08, 0]} material={band}>
-                <boxGeometry args={[0.13, 0.04, 0.13]} />
-              </mesh>
-            )}
           </group>
           <group ref={armR} position={[0.28, 0.17, 0]}>
             <mesh geometry={upperGeo} material={limb} position={[0, -0.12, 0]} />

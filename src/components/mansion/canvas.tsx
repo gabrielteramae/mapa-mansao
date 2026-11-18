@@ -22,8 +22,8 @@ const ROOM_VIEW: Record<RoomId, { x: number; y: number; z: number; zoom: number 
 
 function fitZoom(width: number, height: number) {
   const phone = width < 700;
-  const zoom = phone ? Math.min(width / 9.2, height / 11.2) : Math.min(width / 12, height / 14);
-  return THREE.MathUtils.clamp(zoom, phone ? 36 : 30, phone ? 56 : 48);
+  const zoom = phone ? Math.min(width / 12.4, height / 14.6) : Math.min(width / 15.6, height / 18);
+  return THREE.MathUtils.clamp(zoom, phone ? 28 : 22, phone ? 44 : 38);
 }
 
 const sunDay = new THREE.Color("#fffdf8");
