@@ -665,6 +665,46 @@ function GamingDesk({ z, color }) {
   );
 }
 
+function LedRails() {
+  const panel = useRef(null);
+  const games = useRef(null);
+  const desks = useRef(null);
+  useFrame(({ clock }) => {
+    const night = lightMix.current;
+    const t = clock.elapsedTime * 0.07;
+    const paint = (light, hue) => {
+      if (!light) return;
+      light.color.setHSL(hue % 1, 0.9, 0.55);
+      light.intensity = 6 + night * 14;
+    };
+    paint(panel.current, t);
+    paint(games.current, t + 0.33);
+    paint(desks.current, t + 0.66);
+  });
+  return (
+    <group>
+      <mesh position={[1.4, 0.28, -7.55]} material={rgbStrip}>
+        <boxGeometry args={[10.2, 0.045, 0.05]} />
+      </mesh>
+      <mesh position={[-9.55, 0.07, -1.6]} material={rgbKeys}>
+        <boxGeometry args={[0.05, 0.04, 8.8]} />
+      </mesh>
+      <mesh position={[-1.6, 0.78, -3.4]} material={rgbCase}>
+        <boxGeometry args={[2.28, 0.035, 1.28]} />
+      </mesh>
+      <mesh position={[3.6, 0.22, 5.42]} material={rgbStrip}>
+        <boxGeometry args={[1.52, 0.035, 0.04]} />
+      </mesh>
+      <mesh position={[9.72, 0.08, -0.5]} material={rgbKeys}>
+        <boxGeometry args={[0.045, 0.04, 12.1]} />
+      </mesh>
+      <pointLight ref={panel} position={[1.4, 1.4, -6.4]} distance={16} decay={2} />
+      <pointLight ref={games} position={[-8, 1.2, -1.6]} distance={12} decay={2} />
+      <pointLight ref={desks} position={[8.4, 1.3, -0.4]} distance={14} decay={2} />
+    </group>
+  );
+}
+
 function RoomSet({ screens }) {
   const tvs = [-5.6, -3, -0.4, 2.2];
   const pcZ = [-6.3, -4.65, -3, -1.35, 0.3, 1.95, 3.6, 5.25];
@@ -785,6 +825,8 @@ export function World() {
       <Zone id="lounge" x={0.2} z={5} w={8} d={3.2} />
       <Zone id="setup" x={8.6} z={-0.4} w={2.4} d={12.2} />
       <RoomSet screens={screens.pcs} />
+      <RgbPulse />
+      <LedRails />
       <pointLight position={[0, 3.4, -1]} color="#ffe0b0" intensity={14} distance={30} decay={2} />
       <BannerPlane />
     </group>
