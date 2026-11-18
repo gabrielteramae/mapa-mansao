@@ -6,23 +6,118 @@ import { useHouse, lightMix } from "@/lib/house";
 import { PCS, PC_Z, type ZoneId } from "@/lib/layout";
 
 
+function canvasTex(draw, repeatX = 1, repeatY = 1) {
+  if (typeof document === "undefined") return null;
+  const size = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const g = c.getContext("2d");
+  if (!g) return null;
+  draw(g, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(repeatX, repeatY);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  return tex;
+}
+
+function paintPlanks(g, s, a, b) {
+  g.fillStyle = a;
+  g.fillRect(0, 0, s, s);
+  const rows = 5;
+  const h = s / rows;
+  for (let i = 0; i < rows; i++) {
+    g.fillStyle = i % 2 ? b : a;
+    g.fillRect(0, i * h, s, h - 2);
+    for (let n = 0; n < 14; n++) {
+      g.strokeStyle = `rgba(30,16,8,${0.12 + (n % 4) * 0.04})`;
+      g.beginPath();
+      const y = i * h + 6 + ((n * 17) % (h - 12));
+      g.moveTo(0, y);
+      g.quadraticCurveTo(s * 0.5, y + (n % 2 ? 3 : -3), s, y);
+      g.stroke();
+    }
+    g.fillStyle = "rgba(0,0,0,0.28)";
+    g.fillRect((i % 2) * s * 0.45, i * h, 2, h);
+  }
+}
+
+function paintWeave(g, s) {
+  g.fillStyle = "#e6e6e6";
+  g.fillRect(0, 0, s, s);
+  for (let y = 0; y < s; y += 4) {
+    for (let x = 0; x < s; x += 4) {
+      const alt = (x / 4 + y / 4) % 2 === 0;
+      g.fillStyle = alt ? "#f2f2f2" : "#c8c8c8";
+      g.fillRect(x, y, 3, 3);
+    }
+  }
+}
+
+function paintFelt(g, s) {
+  g.fillStyle = "#d8d8d8";
+  g.fillRect(0, 0, s, s);
+  for (let i = 0; i < 1800; i++) {
+    const x = (i * 47) % s;
+    const y = (i * 91) % s;
+    g.fillStyle = i % 2 ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.16)";
+    g.fillRect(x, y, 2, 2);
+  }
+}
+
+function paintBrush(g, s) {
+  g.fillStyle = "#d5d5d5";
+  g.fillRect(0, 0, s, s);
+  for (let y = 0; y < s; y += 2) {
+    g.strokeStyle = y % 4 === 0 ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.18)";
+    g.beginPath();
+    g.moveTo(0, y);
+    g.lineTo(s, y);
+    g.stroke();
+  }
+}
+
+function paintWall(g, s) {
+  g.fillStyle = "#cfcfd4";
+  g.fillRect(0, 0, s, s);
+  for (let i = 0; i < 900; i++) {
+    g.fillStyle = i % 2 ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.12)";
+    g.fillRect((i * 53) % s, (i * 97) % s, 2, 2);
+  }
+}
+
+const plankMap = canvasTex((g, s) => paintPlanks(g, s, "#5a3a28", "#6b4832"), 12, 9);
+const oakMap = canvasTex((g, s) => paintPlanks(g, s, "#8a5a32", "#a56b3c"), 2, 1);
+const weaveMap = canvasTex(paintWeave, 3, 3);
+const feltMap = canvasTex(paintFelt, 2, 2);
+const brushMap = canvasTex(paintBrush, 1, 4);
+const wallMap = canvasTex(paintWall, 6, 2);
+
 const dark = new THREE.MeshStandardMaterial({
-  color: "#0c0c10",
-  roughness: .42,
-  metalness: .18
+  color: "#1a1a22",
+  map: canvasTex(paintWall, 2, 2),
+  roughness: 0.55,
+  metalness: 0.22,
 });
 const panel = new THREE.MeshStandardMaterial({
-  color: "#2a2a32",
-  roughness: .72
+  color: "#3a3a44",
+  map: wallMap,
+  roughness: 0.78,
 });
 const wood = new THREE.MeshStandardMaterial({
-  color: "#101014",
-  roughness: .55,
-  metalness: .12
+  color: "#ffffff",
+  map: plankMap,
+  bumpMap: plankMap,
+  bumpScale: 0.04,
+  roughness: 0.78,
 });
 const trim = new THREE.MeshStandardMaterial({
-  color: "#24242c",
-  roughness: .62
+  color: "#3c3c46",
+  map: wallMap,
+  bumpMap: wallMap,
+  bumpScale: 0.03,
+  roughness: 0.86,
 });
 const cream = new THREE.MeshStandardMaterial({
   color: "#f2f2f4",
@@ -68,11 +163,13 @@ const lamp = new THREE.MeshStandardMaterial({
 });
 const pillow = new THREE.MeshStandardMaterial({
   color: "#ff5d8f",
-  roughness: .6
+  map: weaveMap,
+  roughness: 0.84,
 });
 const pillow2 = new THREE.MeshStandardMaterial({
   color: "#2ec4b6",
-  roughness: .6
+  map: weaveMap,
+  roughness: 0.84,
 });
 const curtain = new THREE.MeshStandardMaterial({
   color: "#ff7a3c",
@@ -97,11 +194,38 @@ const neon = new THREE.MeshStandardMaterial({
   emissiveIntensity: .95,
   roughness: .35
 });
-const oak = new THREE.MeshStandardMaterial({ color: "#6b4226", roughness: 0.62 });
-const fabric = new THREE.MeshStandardMaterial({ color: "#343a4a", roughness: 0.88 });
-const fabric2 = new THREE.MeshStandardMaterial({ color: "#7a3e46", roughness: 0.88 });
-const cushion = new THREE.MeshStandardMaterial({ color: "#e4ddd2", roughness: 0.82 });
-const metal = new THREE.MeshStandardMaterial({ color: "#9aa0a8", roughness: 0.32, metalness: 0.72 });
+const oak = new THREE.MeshStandardMaterial({
+  color: "#ffffff",
+  map: oakMap,
+  bumpMap: oakMap,
+  bumpScale: 0.05,
+  roughness: 0.68,
+});
+const fabric = new THREE.MeshStandardMaterial({
+  color: "#343a4a",
+  map: weaveMap,
+  bumpMap: weaveMap,
+  bumpScale: 0.02,
+  roughness: 0.92,
+});
+const fabric2 = new THREE.MeshStandardMaterial({
+  color: "#7a3e46",
+  map: weaveMap,
+  bumpMap: weaveMap,
+  bumpScale: 0.02,
+  roughness: 0.92,
+});
+const cushion = new THREE.MeshStandardMaterial({
+  color: "#e4ddd2",
+  map: weaveMap,
+  roughness: 0.88,
+});
+const metal = new THREE.MeshStandardMaterial({
+  color: "#d0d4da",
+  map: brushMap,
+  roughness: 0.28,
+  metalness: 0.82,
+});
 const shadeMat = new THREE.MeshStandardMaterial({
   color: "#ffe7a3",
   emissive: "#ffc14d",
@@ -375,7 +499,10 @@ function Skyline() {
 }
 const felt = new THREE.MeshStandardMaterial({
   color: "#1f8a4c",
-  roughness: .42
+  map: feltMap,
+  bumpMap: feltMap,
+  bumpScale: 0.03,
+  roughness: 0.94,
 });
 const ballYellow = new THREE.MeshStandardMaterial({
   color: "#f2c14e",
