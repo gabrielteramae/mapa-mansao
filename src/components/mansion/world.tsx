@@ -779,11 +779,11 @@ function Sofa({ mat, wide = 1.7 }) {
       <mesh position={[wide / 2 - 0.07, 0.48, 0]} material={mat}>
         <boxGeometry args={[0.1, 0.26, 0.7]} />
       </mesh>
-      <mesh position={[-0.28, 0.48, -0.02]} material={cushion}>
-        <boxGeometry args={[0.48, 0.08, 0.4]} />
+      <mesh position={[-wide * 0.22, 0.48, -0.04]} material={cushion}>
+        <boxGeometry args={[wide * 0.42, 0.08, 0.48]} />
       </mesh>
-      <mesh position={[0.28, 0.48, -0.02]} material={cushion}>
-        <boxGeometry args={[0.48, 0.08, 0.4]} />
+      <mesh position={[wide * 0.22, 0.48, -0.04]} material={cushion}>
+        <boxGeometry args={[wide * 0.42, 0.08, 0.48]} />
       </mesh>
     </group>
   );
@@ -935,8 +935,8 @@ function RiseChair() {
           </mesh>
         </group>
       ))}
-      <mesh position={[0, 0.28, 0]} material={metal}>
-        <cylinderGeometry args={[0.03, 0.035, 0.36, 8]} />
+      <mesh position={[0, 0.32, 0]} material={metal}>
+        <cylinderGeometry args={[0.03, 0.038, 0.5, 8]} />
       </mesh>
       <mesh position={[0, 0.48, 0.02]} material={dark}>
         <boxGeometry args={[0.46, 0.1, 0.46]} />
@@ -988,6 +988,12 @@ function GamingDesk({ z, color, map }) {
         <boxGeometry args={[0.04, 0.72, 0.04]} />
       </mesh>
       <mesh position={[0.42, 0.38, 0.42]} material={trim}>
+        <boxGeometry args={[0.04, 0.72, 0.04]} />
+      </mesh>
+      <mesh position={[-0.12, 0.38, -0.42]} material={trim}>
+        <boxGeometry args={[0.04, 0.72, 0.04]} />
+      </mesh>
+      <mesh position={[-0.12, 0.38, 0.42]} material={trim}>
         <boxGeometry args={[0.04, 0.72, 0.04]} />
       </mesh>
       <mesh position={[0.22, 0.86, 0]} material={metal}>
@@ -1065,7 +1071,7 @@ function Abajur({ x, z }) {
         <sphereGeometry args={[0.07, 10, 8]} />
         <meshBasicMaterial color="#fff1c2" />
       </mesh>
-      <pointLight position={[0, 1.3, 0]} color="#ffd15a" intensity={28} distance={8} decay={2} />
+      <pointLight position={[0, 1.3, 0]} color="#ffd15a" intensity={6} distance={5.5} decay={2} />
     </group>
   );
 }
@@ -1080,7 +1086,7 @@ function LedRails() {
     const paint = (light, hue) => {
       if (!light) return;
       light.color.setHSL(hue % 1, 0.9, 0.55);
-      light.intensity = 6 + night * 14;
+      light.intensity = 2.4 + night * 4;
     };
     paint(panel.current, t);
     paint(games.current, t + 0.33);
@@ -1173,11 +1179,11 @@ function RoomSet({ tvs, monitors }) {
         <mesh position={[-0.15, 0.86, -0.08]} material={cream}>
           <sphereGeometry args={[0.045, 8, 8]} />
         </mesh>
-        <mesh position={[-0.05, 0.86, 0.22]} material={glow}>
+        <mesh position={[-0.05, 0.86, 0.22]} material={redMat}>
           <sphereGeometry args={[0.045, 8, 8]} />
         </mesh>
-        <mesh position={[1.28, 0.82, 0]} rotation={[0, 0, 0.4]} material={oak}>
-          <boxGeometry args={[0.04, 0.04, 1.15]} />
+        <mesh position={[0.55, 0.84, 0.52]} rotation={[0.08, 0.4, 0.35]} material={oak}>
+          <boxGeometry args={[0.035, 0.035, 0.95]} />
         </mesh>
       </group>
       {[
@@ -1250,7 +1256,7 @@ function RoomSet({ tvs, monitors }) {
               <sphereGeometry args={[0.07, 8, 6]} />
               <meshBasicMaterial color="#ffd27a" />
             </mesh>
-            <pointLight position={[x, 1.45, -0.05]} color="#ffb15a" intensity={6} distance={3.2} decay={2} />
+            <pointLight position={[x, 1.45, -0.05]} color="#ffb15a" intensity={2.2} distance={2.6} decay={2} />
           </group>
         ))}
         {[-1.1, -0.55, 0.1, 0.7].map((x, i) => (
@@ -1311,25 +1317,25 @@ function RoomSet({ tvs, monitors }) {
           </group>
         ))}
       </group>
-      <Abajur x={-9.7} z={-7.05} />
-      <Abajur x={9.7} z={-7.05} />
-      <Abajur x={-9.7} z={6.7} />
-      <Abajur x={10.35} z={7.15} />
+      <Abajur x={-8.2} z={-7.15} />
+      <Abajur x={8.2} z={-7.15} />
+      <Abajur x={-8.5} z={6.85} />
+      <Abajur x={7.35} z={7.15} />
       {pcZ.map((z, i) => (
         <GamingDesk key={z} z={z} color={pcColors[i]} map={monitors[i % monitors.length] ?? null} />
       ))}
-      <Plant x={-9.3} z={-6.85} tall />
-      <Plant x={6.6} z={-6.85} />
-      <Plant x={-9.3} z={6.15} tall />
-      <Plant x={-5.8} z={6.2} />
-      <Plant x={6.8} z={3.5} tall />
-      <Plant x={-4.6} z={-6.7} />
-      <Plant x={7.1} z={4.15} />
-      <Plant x={5.8} z={-1.55} />
-      <pointLight position={[-8, 2.2, -1.5]} color="#9ecbff" intensity={10} distance={12} decay={2} />
-      <pointLight position={[1.2, 2.6, -3.2]} color="#ffb15a" intensity={12} distance={14} decay={2} />
-      <pointLight position={[8.2, 2.2, 0]} color="#7aa2ff" intensity={9} distance={14} decay={2} />
-      <pointLight position={[0, 2.1, 5]} color="#ffd59a" intensity={9} distance={11} decay={2} />
+      <Plant x={-9.6} z={-7.15} tall />
+      <Plant x={5.4} z={-6.9} />
+      <Plant x={-9.55} z={4.6} tall />
+      <Plant x={-6.4} z={6.35} />
+      <Plant x={6.2} z={2.6} tall />
+      <Plant x={-4.2} z={-6.9} />
+      <Plant x={7.2} z={5.5} />
+      <Plant x={6.15} z={-1.7} />
+      <pointLight position={[-8, 2.2, -1.5]} color="#9ecbff" intensity={4.5} distance={11} decay={2} />
+      <pointLight position={[1.2, 2.6, -3.2]} color="#ffb15a" intensity={5} distance={12} decay={2} />
+      <pointLight position={[8.2, 2.2, 0]} color="#7aa2ff" intensity={4} distance={12} decay={2} />
+      <pointLight position={[0, 2.1, 5]} color="#ffd59a" intensity={4} distance={10} decay={2} />
     </group>
   );
 }
@@ -1371,7 +1377,7 @@ export function World() {
       <RoomSet tvs={screens.tvs} monitors={screens.monitors} />
       <RgbPulse />
       <LedRails />
-      <pointLight position={[0, 3.4, -1]} color="#ffe0b0" intensity={14} distance={30} decay={2} />
+      <pointLight position={[0, 3.4, -1]} color="#ffe0b0" intensity={7} distance={26} decay={2} />
       <BannerPlane />
     </group>
   );

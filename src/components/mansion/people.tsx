@@ -315,10 +315,10 @@ function Person({ index }: { index: number }) {
     sit.current += (goal - sit.current) * (1 - Math.exp(-8 * capped));
     const s = sit.current;
     const walking = a.state === "walk" ? 1 : 0;
-    const stride = Math.sin(a.phase * 8.4);
+    const stride = Math.sin(a.phase * 7.2);
     const swing = stride * walking;
-    const bob = walking * Math.abs(Math.sin(a.phase * 8.4)) * 0.08;
-    const breath = (1 - walking) * Math.sin(a.phase * 1.8) * 0.02;
+    const bob = walking * Math.abs(stride) * 0.045;
+    const breath = (1 - walking) * Math.sin(a.phase * 1.8) * 0.015;
     const follow = 1 - Math.exp(-9 * capped);
     const sofa = a.spotId.startsWith("sofa");
     const gaming = s > 0.55 && !sofa && a.spotId.startsWith("pc");
@@ -334,12 +334,13 @@ function Person({ index }: { index: number }) {
       );
     }
     const type = Math.sin(a.phase * 6);
-    const reach = gaming ? -0.7 + type * 0.05 : sofa ? -0.12 : chatting ? -0.35 : -0.18;
-    const hip = (sofa ? 0.5 : 0.52) + 0.02 * agent.height;
-    const back = s * 0.1;
+    const reach = gaming ? -0.55 + type * 0.08 : sofa ? -0.2 : chatting ? -0.35 : -0.16;
+    const standY = 0.015 - 0.06 * agent.height;
+    const hipWorld = sofa ? 0.64 : 0.66;
+    const back = s * 0.06;
     const tx = a.x - Math.sin(a.yaw) * back;
     const tz = a.z - Math.cos(a.yaw) * back;
-    const y = THREE.MathUtils.lerp(bob + breath, hip - 0.74 * agent.height, s);
+    const y = THREE.MathUtils.lerp(standY + bob + breath, hipWorld - 0.74 * agent.height, s);
     g.position.x += (tx - g.position.x) * follow;
     g.position.z += (tz - g.position.z) * follow;
     g.position.y += (y - g.position.y) * follow;
@@ -357,27 +358,27 @@ function Person({ index }: { index: number }) {
       head.current.rotation.x =
         (gaming ? 0.12 : sofa ? -0.08 : 0) + (chatting ? Math.sin(a.phase * 1.5) * 0.06 : 0);
     }
-    const liftL = Math.max(0, -stride) * walking;
-    const liftR = Math.max(0, stride) * walking;
-    if (legL.current) legL.current.rotation.x = THREE.MathUtils.lerp(stride * 0.65, -0.95, s);
-    if (legR.current) legR.current.rotation.x = THREE.MathUtils.lerp(-stride * 0.65, -0.95, s);
-    if (shinL.current) shinL.current.rotation.x = THREE.MathUtils.lerp(liftL * 0.85, 1.05, s);
-    if (shinR.current) shinR.current.rotation.x = THREE.MathUtils.lerp(liftR * 0.85, 1.05, s);
+    const kneeL = Math.max(0, stride) * walking;
+    const kneeR = Math.max(0, -stride) * walking;
+    if (legL.current) legL.current.rotation.x = THREE.MathUtils.lerp(-stride * 0.72 * walking, -1.35, s);
+    if (legR.current) legR.current.rotation.x = THREE.MathUtils.lerp(stride * 0.72 * walking, -1.35, s);
+    if (shinL.current) shinL.current.rotation.x = THREE.MathUtils.lerp(kneeL * 1.15, 1.5, s);
+    if (shinR.current) shinR.current.rotation.x = THREE.MathUtils.lerp(kneeR * 1.15, 1.5, s);
     const armBlend = Math.max(s, chatting ? 0.65 : 0);
-    const elbow = gaming ? -0.7 : sofa ? -0.45 : chatting ? -0.25 : 0.12;
+    const elbow = gaming ? -0.85 : sofa ? -0.55 : chatting ? -0.25 : 0.15;
     if (armL.current) {
-      armL.current.rotation.x = THREE.MathUtils.lerp(-swing * 0.75, reach, armBlend);
-      armL.current.rotation.z = gaming ? 0.15 : 0;
+      armL.current.rotation.x = THREE.MathUtils.lerp(swing * 0.7, reach, armBlend);
+      armL.current.rotation.z = THREE.MathUtils.lerp(0.08, gaming ? 0.22 : 0.12, s);
     }
     if (armR.current) {
-      armR.current.rotation.x = THREE.MathUtils.lerp(swing * 0.75, reach, armBlend);
-      armR.current.rotation.z = gaming ? -0.15 : 0;
+      armR.current.rotation.x = THREE.MathUtils.lerp(-swing * 0.7, reach, armBlend);
+      armR.current.rotation.z = THREE.MathUtils.lerp(-0.08, gaming ? -0.22 : -0.12, s);
     }
-    if (foreL.current) foreL.current.rotation.x = THREE.MathUtils.lerp(0.12 + liftR * 0.2, elbow, armBlend);
+    if (foreL.current) foreL.current.rotation.x = THREE.MathUtils.lerp(0.15 + kneeR * 0.35, elbow, armBlend);
     if (foreR.current)
       foreR.current.rotation.x = THREE.MathUtils.lerp(
-        0.12 + liftL * 0.2,
-        elbow + (chatting ? Math.sin(a.phase * 2) * 0.15 : 0),
+        0.15 + kneeL * 0.35,
+        elbow + (chatting ? Math.sin(a.phase * 2) * 0.12 : 0),
         armBlend,
       );
   });

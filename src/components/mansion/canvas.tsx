@@ -80,25 +80,25 @@ function DayLight() {
     if (hemi.current) {
       hemi.current.color.copy(hemiDay).lerp(hemiNight, t);
       hemi.current.groundColor.copy(groundDay).lerp(groundNight, t);
-      hemi.current.intensity = THREE.MathUtils.lerp(0.72, 0.06, t);
+      hemi.current.intensity = THREE.MathUtils.lerp(0.55, 0.07, t);
     }
-    if (amb.current) amb.current.intensity = THREE.MathUtils.lerp(0.42, 0.04, t);
+    if (amb.current) amb.current.intensity = THREE.MathUtils.lerp(0.28, 0.04, t);
     if (sun.current) {
       sun.current.position.lerpVectors(dayPos, nightPos, t);
       sun.current.color.copy(sunDay).lerp(sunNight, t);
-      sun.current.intensity = THREE.MathUtils.lerp(2.15, 0.32, t);
+      sun.current.intensity = THREE.MathUtils.lerp(1.45, 0.22, t);
     }
-    gl.toneMappingExposure = THREE.MathUtils.lerp(hq ? 1.08 : 1, 0.78, t);
+    gl.toneMappingExposure = THREE.MathUtils.lerp(hq ? 0.98 : 0.92, 0.7, t);
   });
   return (
     <>
-      <hemisphereLight ref={hemi} args={["#ffffff", "#f3ead8", 0.72]} />
-      <ambientLight ref={amb} intensity={0.42} />
+      <hemisphereLight ref={hemi} args={["#ffffff", "#f3ead8", 0.55]} />
+      <ambientLight ref={amb} intensity={0.28} />
       <directionalLight
         ref={sun}
         castShadow={hq}
         position={[8, 26, 12]}
-        intensity={2.15}
+        intensity={1.45}
         color="#fffdf8"
         shadow-mapSize={[map, map]}
         shadow-bias={-0.00025}
