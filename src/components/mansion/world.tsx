@@ -233,6 +233,9 @@ const shadeMat = new THREE.MeshStandardMaterial({
   roughness: 0.55,
   side: THREE.DoubleSide,
 });
+const potMat = new THREE.MeshStandardMaterial({ color: "#f3efe6", roughness: 0.62 });
+const leafMat = new THREE.MeshStandardMaterial({ color: "#3c8f46", roughness: 0.72 });
+const leafDark = new THREE.MeshStandardMaterial({ color: "#246536", roughness: 0.78 });
 const glass = new THREE.MeshStandardMaterial({
   color: "#d7e4ea",
   roughness: 0.08,
@@ -1085,7 +1088,7 @@ function LedRails() {
   });
   return (
     <group>
-      <mesh position={[1.4, 0.28, -7.55]} material={rgbStrip}>
+      <mesh position={[0, 0.28, -7.55]} material={rgbStrip}>
         <boxGeometry args={[10.2, 0.045, 0.05]} />
       </mesh>
       <mesh position={[-9.55, 0.07, -1.6]} material={rgbKeys}>
@@ -1106,9 +1109,34 @@ function LedRails() {
       <mesh position={[9.72, 0.08, -0.5]} material={rgbKeys}>
         <boxGeometry args={[0.045, 0.04, 12.1]} />
       </mesh>
-      <pointLight ref={panel} position={[1.4, 1.4, -6.4]} distance={16} decay={2} />
+      <pointLight ref={panel} position={[0, 1.4, -6.4]} distance={16} decay={2} />
       <pointLight ref={games} position={[-8, 1.2, -1.6]} distance={12} decay={2} />
       <pointLight ref={desks} position={[8.4, 1.3, -0.4]} distance={14} decay={2} />
+    </group>
+  );
+}
+
+function Plant({ x, z, tall = false }) {
+  return (
+    <group position={[x, 0, z]}>
+      <mesh position={[0, 0.11, 0]} material={potMat}>
+        <cylinderGeometry args={[0.16, 0.12, 0.22, 8]} />
+      </mesh>
+      <mesh position={[0, 0.16, 0]} material={oak}>
+        <cylinderGeometry args={[0.18, 0.18, 0.04, 8]} />
+      </mesh>
+      <mesh position={[0, tall ? 0.55 : 0.38, 0]} material={leafDark}>
+        <cylinderGeometry args={[0.02, 0.028, tall ? 0.7 : 0.36, 5]} />
+      </mesh>
+      <mesh position={[0, tall ? 0.95 : 0.62, 0]} material={leafMat}>
+        <sphereGeometry args={[tall ? 0.26 : 0.22, 10, 8]} />
+      </mesh>
+      <mesh position={[0.16, tall ? 0.78 : 0.5, 0.06]} material={leafDark}>
+        <sphereGeometry args={[0.14, 8, 6]} />
+      </mesh>
+      <mesh position={[-0.14, tall ? 0.84 : 0.54, -0.05]} material={leafMat}>
+        <sphereGeometry args={[0.12, 8, 6]} />
+      </mesh>
     </group>
   );
 }
@@ -1290,6 +1318,14 @@ function RoomSet({ tvs, monitors }) {
       {pcZ.map((z, i) => (
         <GamingDesk key={z} z={z} color={pcColors[i]} map={monitors[i % monitors.length] ?? null} />
       ))}
+      <Plant x={-9.3} z={-6.85} tall />
+      <Plant x={6.6} z={-6.85} />
+      <Plant x={-9.3} z={6.15} tall />
+      <Plant x={-5.8} z={6.2} />
+      <Plant x={6.8} z={3.5} tall />
+      <Plant x={-4.6} z={-6.7} />
+      <Plant x={7.1} z={4.15} />
+      <Plant x={5.8} z={-1.55} />
       <pointLight position={[-8, 2.2, -1.5]} color="#9ecbff" intensity={10} distance={12} decay={2} />
       <pointLight position={[1.2, 2.6, -3.2]} color="#ffb15a" intensity={12} distance={14} decay={2} />
       <pointLight position={[8.2, 2.2, 0]} color="#7aa2ff" intensity={9} distance={14} decay={2} />

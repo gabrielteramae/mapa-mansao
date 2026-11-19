@@ -320,13 +320,8 @@ function Person({ index }: { index: number }) {
     const bob = walking * Math.abs(Math.sin(a.phase * 8.4)) * 0.08;
     const breath = (1 - walking) * Math.sin(a.phase * 1.8) * 0.02;
     const follow = 1 - Math.exp(-9 * capped);
-    g.position.x += (a.x - g.position.x) * follow;
-    g.position.z += (a.z - g.position.z) * follow;
     const sofa = a.spotId.startsWith("sofa");
-    const gaming =
-      s > 0.55 &&
-      !sofa &&
-      (a.spotId.startsWith("pc") || a.spotId.startsWith("tv") || a.spotId.startsWith("arena"));
+    const gaming = s > 0.55 && !sofa && a.spotId.startsWith("pc");
     const chatting = a.state === "chat";
     const mate = a.partner ? getAgents().find((o) => o.id === a.partner) : undefined;
     let look = (1 - walking) * Math.sin(a.phase * 0.65) * 0.22;
@@ -339,9 +334,14 @@ function Person({ index }: { index: number }) {
       );
     }
     const type = Math.sin(a.phase * 6);
-    const reach = gaming ? -0.85 + type * 0.06 : sofa ? -0.15 : chatting ? -0.35 : -0.2;
-    const seatY = sofa ? 0.58 : 0.5;
-    const y = THREE.MathUtils.lerp(bob + breath, seatY - 0.74 * agent.height, s);
+    const reach = gaming ? -0.7 + type * 0.05 : sofa ? -0.12 : chatting ? -0.35 : -0.18;
+    const hip = (sofa ? 0.5 : 0.52) + 0.02 * agent.height;
+    const back = s * 0.1;
+    const tx = a.x - Math.sin(a.yaw) * back;
+    const tz = a.z - Math.cos(a.yaw) * back;
+    const y = THREE.MathUtils.lerp(bob + breath, hip - 0.74 * agent.height, s);
+    g.position.x += (tx - g.position.x) * follow;
+    g.position.z += (tz - g.position.z) * follow;
     g.position.y += (y - g.position.y) * follow;
     const turn = Math.atan2(Math.sin(a.yaw - g.rotation.y), Math.cos(a.yaw - g.rotation.y));
     g.rotation.y += turn * follow;
@@ -359,10 +359,10 @@ function Person({ index }: { index: number }) {
     }
     const liftL = Math.max(0, -stride) * walking;
     const liftR = Math.max(0, stride) * walking;
-    if (legL.current) legL.current.rotation.x = THREE.MathUtils.lerp(stride * 0.65, -1.05, s);
-    if (legR.current) legR.current.rotation.x = THREE.MathUtils.lerp(-stride * 0.65, -1.05, s);
-    if (shinL.current) shinL.current.rotation.x = THREE.MathUtils.lerp(liftL * 0.85, 1.15, s);
-    if (shinR.current) shinR.current.rotation.x = THREE.MathUtils.lerp(liftR * 0.85, 1.15, s);
+    if (legL.current) legL.current.rotation.x = THREE.MathUtils.lerp(stride * 0.65, -0.95, s);
+    if (legR.current) legR.current.rotation.x = THREE.MathUtils.lerp(-stride * 0.65, -0.95, s);
+    if (shinL.current) shinL.current.rotation.x = THREE.MathUtils.lerp(liftL * 0.85, 1.05, s);
+    if (shinR.current) shinR.current.rotation.x = THREE.MathUtils.lerp(liftR * 0.85, 1.05, s);
     const armBlend = Math.max(s, chatting ? 0.65 : 0);
     const elbow = gaming ? -0.7 : sofa ? -0.45 : chatting ? -0.25 : 0.12;
     if (armL.current) {

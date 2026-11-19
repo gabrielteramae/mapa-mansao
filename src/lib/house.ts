@@ -26,7 +26,7 @@ export const useHouse = create<House>((set) => ({
   member: null,
   frame: 0,
   night: false,
-  playing: false,
+  playing: true,
   speed: 1,
   spin: false,
   hq: true,

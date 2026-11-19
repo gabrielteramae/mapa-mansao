@@ -362,7 +362,43 @@ const SOLIDS: Solid[] = [
   makeSolid(0, 1.55, -8.02, 22, 3.15, 0.18),
   makeSolid(-11, 0.38, -0.2, 0.16, 0.7, 16),
   makeSolid(11, 0.38, -0.2, 0.16, 0.7, 16),
-  makeSolid(0, 1, 7.75, 22, 2, 0.08),
+  ...[-5.6, -3, -0.4, 2.2].flatMap((z) => [
+    makeSolid(-9.35, 0.55, z, 0.55, 1.1, 1.45),
+    makeSolid(-7.08, 0.58, z, 0.16, 0.4, 1.62),
+  ]),
+  makeSolid(-2.1, 0.58, 5.32, 1.85, 0.4, 0.16),
+  makeSolid(0.5, 0.58, 5.32, 1.65, 0.4, 0.16),
+  makeSolid(-1.6, 0.75, -3.4, 2.4, 0.3, 1.4),
+  ...[
+    [1.15, -4.9],
+    [2.4, -4.9],
+    [3.65, -4.9],
+    [4.9, -4.9],
+    [1.15, -2.75],
+    [2.4, -2.75],
+    [3.65, -2.75],
+    [4.9, -2.75],
+  ].map(([x, z]) => makeSolid(x!, 0.8, z!, 0.7, 1.2, 1.3)),
+  ...[-6.4, -4.55, -2.7, -0.85, 1, 2.85, 4.7, 6.4].map((z) => makeSolid(9.25, 0.7, z, 0.85, 0.9, 1.05)),
+  makeSolid(4.2, 0.7, 6.5, 3.9, 1.2, 1.05),
+  makeSolid(6.65, 0.85, 6.45, 0.75, 1.7, 0.7),
+  makeSolid(6.75, 0.38, 5.7, 0.48, 0.75, 0.46),
+  ...[
+    [-3.4, 1.2],
+    [-0.8, 2.3],
+    [1.6, 0.4],
+    [3.1, 2.1],
+  ].map(([x, z]) => makeSolid(x!, 0.3, z!, 0.85, 0.5, 0.85, true)),
+  ...[
+    [-9.3, -6.85],
+    [6.6, -6.85],
+    [-9.3, 6.15],
+    [-5.8, 6.2],
+    [6.8, 3.5],
+    [-4.6, -6.7],
+    [7.1, 4.15],
+    [5.8, -1.55],
+  ].map(([x, z]) => makeSolid(x!, 0.45, z!, 0.5, 0.9, 0.5, true)),
 ];
 
 const WX0 = -10.7;
@@ -374,11 +410,11 @@ const GW = Math.round((WX1 - WX0) / CELL);
 const GH = Math.round((WZ1 - WZ0) / CELL);
 
 function radiusOf(width: number) {
-  return 0.28 * width;
+  return Math.min(0.42, 0.28 * width);
 }
 
 function bodySpace(width: number) {
-  return 0.4 * width;
+  return Math.min(0.52, 0.34 * width);
 }
 
 function crowded(x: number, z: number, self: Agent, others: Agent[]) {
@@ -986,16 +1022,16 @@ function shuffle<T>(list: T[]) {
 }
 
 const posts: Record<string, { x: number; z: number; yaw: number; sit: boolean; spot: string; room: ZoneId }> = {
-  gabriel: { x: -7.3, z: -5.6, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv", room: "consoles" },
-  saad: { x: -7.3, z: -3, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv", room: "consoles" },
-  mosca: { x: -7.3, z: -0.4, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv", room: "consoles" },
-  kaiog: { x: -1.6, z: -2.15, yaw: Math.PI, sit: false, spot: "pool", room: "arena" },
-  gordao: { x: 2.4, z: -1.55, yaw: Math.PI, sit: false, spot: "pin", room: "arena" },
-  guigui: { x: 3.65, z: -1.55, yaw: Math.PI, sit: false, spot: "hoop", room: "arena" },
-  guilherme: { x: 8.2, z: -4.55, yaw: Math.PI / 2, sit: true, spot: "pc1", room: "setup" },
-  nakazone: { x: 8.2, z: -0.85, yaw: Math.PI / 2, sit: true, spot: "pc2", room: "setup" },
-  nishio: { x: 8.2, z: 2.85, yaw: Math.PI / 2, sit: true, spot: "pc3", room: "setup" },
-  maphil: { x: -2.1, z: 4.9, yaw: Math.PI, sit: true, spot: "sofa-bar", room: "lounge" },
+  gabriel: { x: -7.55, z: -5.6, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv-1", room: "consoles" },
+  saad: { x: -7.55, z: -3, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv-2", room: "consoles" },
+  mosca: { x: -7.55, z: -0.4, yaw: -Math.PI / 2, sit: true, spot: "sofa-tv-3", room: "consoles" },
+  kaiog: { x: -1.6, z: -2.05, yaw: Math.PI, sit: false, spot: "pool1", room: "arena" },
+  gordao: { x: 2.4, z: -1.45, yaw: Math.PI, sit: false, spot: "pin2", room: "arena" },
+  guigui: { x: 3.65, z: -1.45, yaw: Math.PI, sit: false, spot: "pin3", room: "arena" },
+  guilherme: { x: 8.22, z: -4.55, yaw: Math.PI / 2, sit: true, spot: "pc2", room: "setup" },
+  nakazone: { x: 8.22, z: -0.85, yaw: Math.PI / 2, sit: true, spot: "pc4", room: "setup" },
+  nishio: { x: 8.22, z: 2.85, yaw: Math.PI / 2, sit: true, spot: "pc6", room: "setup" },
+  maphil: { x: -2.1, z: 4.78, yaw: Math.PI, sit: true, spot: "sofa-bar-1", room: "lounge" },
 };
 
 function createAgents(): Agent[] {
@@ -1067,8 +1103,8 @@ export function getAgents() {
   return agents;
 }
 
-export function step(_dt: number) {
-  return;
+export function step(dt: number) {
+  tick(Math.min(dt, 0.05));
 }
 
 const PHYSICS_STEP = 1 / 60;
