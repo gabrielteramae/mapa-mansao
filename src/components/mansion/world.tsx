@@ -1100,20 +1100,20 @@ function LedRails() {
       <mesh position={[-9.55, 0.07, -1.6]} material={rgbKeys}>
         <boxGeometry args={[0.05, 0.04, 8.8]} />
       </mesh>
-      <mesh position={[-1.6, 0.8, -2.78]} material={rgbCase}>
-        <boxGeometry args={[2.2, 0.03, 0.04]} />
+      <mesh position={[0.3, 0.8, -2.08]} material={rgbCase}>
+        <boxGeometry args={[2.15, 0.03, 0.04]} />
       </mesh>
-      <mesh position={[-1.6, 0.8, -4.02]} material={rgbCase}>
-        <boxGeometry args={[2.2, 0.03, 0.04]} />
+      <mesh position={[0.3, 0.8, -0.82]} material={rgbCase}>
+        <boxGeometry args={[2.15, 0.03, 0.04]} />
       </mesh>
-      <mesh position={[-2.68, 0.8, -3.4]} material={rgbCase}>
-        <boxGeometry args={[0.04, 0.03, 1.2]} />
+      <mesh position={[-0.74, 0.8, -1.45]} material={rgbCase}>
+        <boxGeometry args={[0.04, 0.03, 1.18]} />
       </mesh>
-      <mesh position={[-0.52, 0.8, -3.4]} material={rgbCase}>
-        <boxGeometry args={[0.04, 0.03, 1.2]} />
+      <mesh position={[1.34, 0.8, -1.45]} material={rgbCase}>
+        <boxGeometry args={[0.04, 0.03, 1.18]} />
       </mesh>
-      <mesh position={[9.72, 0.08, -0.5]} material={rgbKeys}>
-        <boxGeometry args={[0.045, 0.04, 12.1]} />
+      <mesh position={[9.72, 0.08, 0]} material={rgbKeys}>
+        <boxGeometry args={[0.045, 0.04, 13]} />
       </mesh>
       <pointLight ref={panel} position={[0, 1.4, -6.4]} distance={16} decay={2} />
       <pointLight ref={games} position={[-8, 1.2, -1.6]} distance={12} decay={2} />
@@ -1149,14 +1149,14 @@ function Plant({ x, z, tall = false }) {
 
 function RoomSet({ tvs, monitors }) {
   const tvZ = [-5.6, -3, -0.4, 2.2];
-  const pcZ = [-6.4, -4.55, -2.7, -0.85, 1, 2.85, 4.7, 6.4];
+  const pcZ = [-6.2, -4.43, -2.66, -0.89, 0.89, 2.66, 4.43, 6.2];
   const pcColors = ["#4d7cff", "#ff2d55", "#3ddc6e", "#ffd56a", "#c084fc", "#2ec4b6", "#ff8a2a", "#f4f7fb"];
   return (
     <group>
       {tvZ.map((z, i) => (
         <TvLounge key={z} z={z} map={tvs[i] ?? null} />
       ))}
-      <group position={[-1.6, 0, -3.4]}>
+      <group position={[0.3, 0, -1.45]}>
         {[[-0.95, -0.48], [0.95, -0.48], [-0.95, 0.48], [0.95, 0.48]].map(([x, z]) => (
           <mesh key={`${x}-${z}`} position={[x, 0.36, z]} material={oak}>
             <boxGeometry args={[0.08, 0.72, 0.08]} />
@@ -1187,38 +1187,36 @@ function RoomSet({ tvs, monitors }) {
         </mesh>
       </group>
       {[
-        [1.15, -4.9, "#ff4fd8"],
-        [2.4, -4.9, "#4d7cff"],
-        [3.65, -4.9, "#ffd56a"],
-        [4.9, -4.9, "#3ddc6e"],
-        [1.15, -2.75, "#ff8a2a"],
-        [2.4, -2.75, "#c084fc"],
-        [3.65, -2.75, "#2ec4b6"],
-        [4.9, -2.75, "#ff5d73"],
+        [-3.9, -4.5, "#ff4fd8"],
+        [-2.2, -4.5, "#4d7cff"],
+        [-0.5, -4.5, "#ffd56a"],
+        [1.2, -4.5, "#3ddc6e"],
+        [2.9, -4.5, "#ff8a2a"],
+        [4.6, -4.5, "#c084fc"],
       ].map(([x, z, color]) => (
         <Pinball key={`${x}-${z}`} x={x} z={z} color={color} />
       ))}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.2, 0.03, 0.8]}>
-        <planeGeometry args={[7.4, 4.6]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.1, 0.02, 1.85]}>
+        <planeGeometry args={[6.6, 3.2]} />
         <meshStandardMaterial map={galaxyMap} roughness={0.95} />
       </mesh>
-      <group position={[-2.1, 0, 5.05]}>
-        <Sofa mat={beige} wide={1.9} />
+      <group position={[-3.5, 0, 4.9]}>
+        <Sofa mat={beige} wide={2} />
       </group>
-      <group position={[0.5, 0, 5.05]}>
-        <Sofa mat={beige} wide={1.7} />
+      <group position={[-0.7, 0, 4.9]}>
+        <Sofa mat={beige} wide={1.85} />
       </group>
       {[
-        [-3.4, 1.2, pillow2, 0.2],
-        [-0.8, 2.3, pillow, 1.1],
-        [1.6, 0.4, beige, 2.2],
-        [3.1, 2.1, glow, 0.6],
+        [-2.4, 1.15, pillow2, 0.4],
+        [-0.4, 2.45, pillow, 1.2],
+        [1.8, 1.05, beige, 2.1],
+        [2.5, 2.85, glow, 0.7],
       ].map(([x, z, mat, rot], i) => (
         <group key={i} position={[x, 0, z]} rotation={[0, rot, 0]}>
           <Pouf mat={mat} />
         </group>
       ))}
-      <group position={[4.2, 0, 6.4]}>
+      <group position={[4.5, 0, 6.45]}>
         <mesh position={[0, 0.55, 0]} material={dark}>
           <boxGeometry args={[3.8, 1.05, 0.78]} />
         </mesh>
@@ -1284,7 +1282,7 @@ function RoomSet({ tvs, monitors }) {
         <mesh position={[0.25, 1.24, 0.12]} material={glass}>
           <cylinderGeometry args={[0.035, 0.04, 0.22, 8]} />
         </mesh>
-        <group position={[2.45, 0, 0.05]}>
+        <group position={[1.5, 0, 0.22]}>
           <mesh position={[0, 0.85, 0]} material={cream}>
             <boxGeometry args={[0.7, 1.7, 0.62]} />
           </mesh>
@@ -1295,7 +1293,7 @@ function RoomSet({ tvs, monitors }) {
             <boxGeometry args={[0.03, 0.28, 0.03]} />
           </mesh>
         </group>
-        <group position={[2.55, 0, -0.7]}>
+        <group position={[-1.45, 0, 0.18]}>
           <mesh position={[0, 0.38, 0]} material={dark}>
             <boxGeometry args={[0.42, 0.7, 0.4]} />
           </mesh>
@@ -1306,8 +1304,8 @@ function RoomSet({ tvs, monitors }) {
             <boxGeometry args={[0.02, 0.16, 0.02]} />
           </mesh>
         </group>
-        {[-1.3, -0.4, 0.5, 1.4].map((x) => (
-          <group key={`stool-${x}`} position={[x, 0, -0.85]}>
+        {[-1.2, -0.4, 0.4, 1.15].map((x) => (
+          <group key={`stool-${x}`} position={[x, 0, -1.05]}>
             <mesh position={[0, 0.38, 0]} material={metal}>
               <cylinderGeometry args={[0.03, 0.035, 0.7, 6]} />
             </mesh>
@@ -1317,21 +1315,18 @@ function RoomSet({ tvs, monitors }) {
           </group>
         ))}
       </group>
-      <Abajur x={-8.2} z={-7.15} />
-      <Abajur x={8.2} z={-7.15} />
-      <Abajur x={-8.5} z={6.85} />
-      <Abajur x={7.35} z={7.15} />
+      <Abajur x={-9.2} z={-7.4} />
+      <Abajur x={7.8} z={-7.35} />
+      <Abajur x={-9.5} z={7} />
+      <Abajur x={10.25} z={7.35} />
       {pcZ.map((z, i) => (
         <GamingDesk key={z} z={z} color={pcColors[i]} map={monitors[i % monitors.length] ?? null} />
       ))}
-      <Plant x={-9.6} z={-7.15} tall />
-      <Plant x={5.4} z={-6.9} />
-      <Plant x={-9.55} z={4.6} tall />
-      <Plant x={-6.4} z={6.35} />
-      <Plant x={6.2} z={2.6} tall />
-      <Plant x={-4.2} z={-6.9} />
-      <Plant x={7.2} z={5.5} />
-      <Plant x={6.15} z={-1.7} />
+      <Plant x={-10.3} z={-7.4} tall />
+      <Plant x={10.3} z={-7.4} />
+      <Plant x={-10.3} z={5.8} tall />
+      <Plant x={-6.15} z={6.95} />
+      <Plant x={10.3} z={5.55} />
       <pointLight position={[-8, 2.2, -1.5]} color="#9ecbff" intensity={4.5} distance={11} decay={2} />
       <pointLight position={[1.2, 2.6, -3.2]} color="#ffb15a" intensity={5} distance={12} decay={2} />
       <pointLight position={[8.2, 2.2, 0]} color="#7aa2ff" intensity={4} distance={12} decay={2} />
@@ -1371,8 +1366,8 @@ export function World() {
       )}
       <Zone id="mural" x={0} z={-6.4} w={10} d={1.6} />
       <Zone id="consoles" x={-8.2} z={-1.6} w={3.4} d={9} />
-      <Zone id="arena" x={1.4} z={-3.3} w={7} d={4.2} />
-      <Zone id="lounge" x={0.2} z={5} w={8} d={3.2} />
+      <Zone id="arena" x={0.4} z={-3} w={10.5} d={4.2} />
+      <Zone id="lounge" x={0.4} z={5.5} w={11} d={3.6} />
       <Zone id="setup" x={8.6} z={-0.4} w={2.4} d={12.2} />
       <RoomSet tvs={screens.tvs} monitors={screens.monitors} />
       <RgbPulse />
