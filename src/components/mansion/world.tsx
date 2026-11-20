@@ -1282,25 +1282,25 @@ function RoomSet({ tvs, monitors }) {
         <mesh position={[0.25, 1.24, 0.12]} material={glass}>
           <cylinderGeometry args={[0.035, 0.04, 0.22, 8]} />
         </mesh>
-        <group position={[1.5, 0, 0.22]}>
+        <group position={[-2.32, 0, 0]}>
           <mesh position={[0, 0.85, 0]} material={cream}>
             <boxGeometry args={[0.7, 1.7, 0.62]} />
           </mesh>
-          <mesh position={[0, 1.15, 0.32]} material={dark}>
+          <mesh position={[0, 1.15, -0.32]} material={dark}>
             <boxGeometry args={[0.62, 0.9, 0.02]} />
           </mesh>
-          <mesh position={[0.28, 1.15, 0.34]} material={metal}>
+          <mesh position={[0.28, 1.15, -0.34]} material={metal}>
             <boxGeometry args={[0.03, 0.28, 0.03]} />
           </mesh>
         </group>
-        <group position={[-1.45, 0, 0.18]}>
+        <group position={[2.22, 0, 0]}>
           <mesh position={[0, 0.38, 0]} material={dark}>
-            <boxGeometry args={[0.42, 0.7, 0.4]} />
+            <boxGeometry args={[0.46, 0.76, 0.42]} />
           </mesh>
-          <mesh position={[0, 0.38, 0.21]} material={trim}>
-            <boxGeometry args={[0.34, 0.52, 0.02]} />
+          <mesh position={[0, 0.4, -0.22]} material={trim}>
+            <boxGeometry args={[0.36, 0.52, 0.02]} />
           </mesh>
-          <mesh position={[0.14, 0.4, 0.23]} material={metal}>
+          <mesh position={[0.16, 0.42, -0.24]} material={metal}>
             <boxGeometry args={[0.02, 0.16, 0.02]} />
           </mesh>
         </group>
